@@ -1,1 +1,46 @@
 \chapter{Methods}
+
+\section{Gauss-Newton Algorithm}
+
+The \textit{Gauss-Newton} algorithm is a method for finding the optimal set of parameters $\mathbf{p}$ that minimizes the sum of squares of non-linear vector-valued objective functions $e(\cdot)$
+%
+\begin{equation}
+\hat{\mathbf{p}} = \arg\min_{p} \sum_{i=1}^N\left[ e_i(\mathbf{p})^2\right] .
+\end{equation}
+
+The Gauss-Newton algorithm is derived from the \textit{Newton} algorithm for finding roots and extremal points which itself is based on the Taylor series expansion. The Newton method for finding extremal points of the scalar objective function $f(x)$ is an iterative procedure
+%
+\begin{equation}
+x_{t+1} = x_t - \frac{f^{(1)}(x_t)}{f^{(2)}(x_t)}
+\label{eqn:newton_minimum}
+\end{equation}
+%
+starting at an initial state $x_0$ using the first- and second-order derivatives ($f^{(1)}$, $f^{(2)}$) of the objective function.
+
+For finding the minimum of the function $e(\cdot)$ with respect to a parameter vector $\mathbf{p}$, the first- and second-order partial derivatives are used. In particular, the first- and second-order derivatives in \ref{eqn:newton_minimum} are replaced by the gradient $\nabla e(\mathbf{p})$ and the Hessian $\nabla^2 e(\mathbf{p})$ of the objective function $e$.
+The partial derivatives of the vector-valued function $e(\cdot)$ with respect to the parameter vector $\mathbf{p}$ are aggregated in the \textit{Jacobian} matrix $J\in \mathbb{R}^{i \times j}$ with elements
+%
+\begin{equation}
+J_{i,j} = \frac{\partial e_i(\mathbf{p})}{\partial p_j} .
+\end{equation}
+%
+Hence,
+\begin{align}
+\nabla e(\mathbf{p}) &= J^\top e(\mathbf{p}) \\
+H(e) = \nabla^2 e(\mathbf{p}) &= J^\top J +  \sum_{i=1} e_i(\mathbf{p}) \nabla^2 e_i(\mathbf{p}) .
+\end{align}
+
+For small $e$, the Hessian $H(e)$ can be approximated by
+\begin{equation}
+H(e) \approx J^\top J
+\end{equation}
+%
+neglecting the second-order derivatives. This approximation is used in the Gauss-Newton algorithm and the parameter update step becomes
+%
+\begin{align}
+\mathbf{p}_{t+1} &= \mathbf{p}_{t} - \Delta\mathbf{p} \\
+&= \mathbf{p}_{t} - H(e)^{-1} \cdot \nabla e(\mathbf{p}) \\
+&= \mathbf{p}_{t} - \left(J^\top J\right)^{-1} \cdot J^\top e(\mathbf{p}) .
+\end{align}
+
+The parameter update $\Delta\mathbf{p}$ is proportionally driven by the gradient of the objective function and inverse proportional by the approximation of the Hessian.

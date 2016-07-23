@@ -1,4 +1,5 @@
 build
 *-eps-converted-to.pdf
+*.bak
 
 *.tks
