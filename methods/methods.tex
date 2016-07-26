@@ -40,7 +40,7 @@ neglecting the second-order derivatives. This approximation is used in the Gauss
 \begin{align}
 \mathbf{p}_{t+1} &= \mathbf{p}_{t} - \Delta\mathbf{p} \\
 &= \mathbf{p}_{t} - H(e)^{-1} \cdot \nabla e(\mathbf{p}) \\
-&= \mathbf{p}_{t} - \left(J^\top J\right)^{-1} \cdot J^\top e(\mathbf{p}) .
+&= \mathbf{p}_{t} - \left(J^\top J\right)^{-1} \cdot J^\top e(\mathbf{p}) \label{eqn:gn_param_update}.
 \end{align}
 
 The parameter update $\Delta\mathbf{p}$ is proportionally driven by the gradient of the objective function and inverse proportional by the approximation of the Hessian.
@@ -50,7 +50,30 @@ The parameter update $\Delta\mathbf{p}$ is proportionally driven by the gradient
 
 Prior information can be used in the Gauss-Newton algorithm by modulating the Hessian approximation and the gradient towards the desired state. This is achieved by selecting an objective function and calculating its partial derivatives with respect to the parameter vector. These partial derivatives are used in the Jacobian as shown in equations \ref{eqn:gn_gradient} and \ref{eqn:gn_hessian}.
 
+The full parameter vector in DART consists of the 6D pose of the root frame and the $N$ joints positions:
+\begin{equation}
+\mathbf{p} = \begin{bmatrix}
+x & y & z & \phi & \theta & \psi & | & q_1 & \cdots & q_N
+\end{bmatrix}
+\end{equation}
+
+with $x$, $y$, $z$ for the translation, $\phi$, $\theta$, $\psi$ for the orientation in radiant Euler angles, and $q_1 \dots q_N$ the individual joint position values.
+
+
 \subsection{Known Frame Pose}
+
+For constraining the translation of the root frame in between optimization iterations, the parameter update vector $\Delta\mathbf{p}$ must be computed such that its first 6 elements for the pose are $0$. From equation \ref{eqn:gn_param_update}
+\begin{align}
+\Delta\mathbf{p} &= \left(J^\top J\right)^{-1} \cdot J^\top e(\mathbf{p}) = \begin{bmatrix}
+\mathbf{0} & | & q_1 & \cdots & q_N
+\end{bmatrix} \\
+J^\top e &= J^\top J \cdot \begin{bmatrix}
+\mathbf{0} & | & q_1 & \cdots & q_N
+\end{bmatrix}
+\end{align}
+
+Cancelling out the pose update can be achieved by applying the prior on the final blended Hessian and gradient just before the final parameter update is computed. In particular the fixed frame prior computes the parameter update $\Delta\mathbf{p}$ from the blended Hessian and gradient, cancels out the first 6 elements for the pose, and computes the new gradient. Instead of blending this gradient ($J^\top e$) into the final gradient, the global gradient is overwritten resulting in enforcing no frame pose update.
+
 
 \subsection{Reported Joint Positions}
 
