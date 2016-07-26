@@ -53,10 +53,11 @@ The deviation of the estimated to the reported robot state is measured in joint 
 
 The error in joint and task space is computed as L2 norm (Euclidean distance) of its components and plotted over time. In joint space these components are the left fingers (13 DoF: 3 \emph{leftIndexFingerPitch}, 3 \emph{leftMiddleFingerPitch}, 3 \emph{leftPinkyPitch}, 3 \emph{leftThumbPitch} and 1 \emph{leftThumbRoll}) and the left arm (7 DoF: \emph{leftShoulderPitch/Roll/Yaw}, \emph{leftElbowPitch}, \emph{leftForearmYaw}, \emph{leftWristRoll/Pitch}). In task space, the 6DoF pose of the left hand (frame: \emph{leftPalm}) is computed via FK on the reported and estimated robot configuration. The position and orientation error are individually plotted.
 
-The plots compare these errors for the two depth sources for weights in the range 0 to 5. For a weight of 0, no joint prior is used at all.
+\subsubsection{Common Weight}
 
+The plots compare the joint and task space errors for the two depth sources for common weights in the range 0 to 5. The common weighting scheme \emph{Weighted L2 norm of joint position deviation} (equation \ref{eqn:objf_weightedL2}) is applied. A weight of 0 indicates that no prior is used at all.
 
-\subsubsection{Stereo}
+\paragraph{Stereo}
 
 Figure \ref{fig:stereo_joint_error} compares the joint error for left fingers and arm. For both parts, after the optimization reaches the steady state, the maximum error is reached when no prior information from the reported configuration is used.
 The general trend is that the error decreases with increasing weight. This is not true for the arm movement in the second half of phase 4, where weights of $0.2$ and $0.5$ result in larger errors than using no prior.
@@ -66,9 +67,9 @@ The largest decrease in error can be seen for the finger joints when using alrea
 
 \begin{figure}
 \centering
-\subfloat[finger joints]{\includegraphics[width=\textwidth]{images/eval_prior/stereo_finger_joint_error.pdf} \label{fig:stereo_joint_error_hand} }
-
-\subfloat[arm joints]{\includegraphics[width=\textwidth]{images/eval_prior/stereo_arm_joint_error.pdf} \label{fig:stereo_joint_error_arm} }
+\subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/stereo_finger_joint_error.pdf} \label{fig:stereo_joint_error_hand} }
+%
+\subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/stereo_arm_joint_error.pdf} \label{fig:stereo_joint_error_arm} }
 \caption{Stereo, joint space error for left finger and arm joints}
 \label{fig:stereo_joint_error}
 \end{figure}
@@ -77,9 +78,9 @@ As the hand position and orientation only depends on the arm configuration but n
 
 \begin{figure}
 \centering
-\subfloat[position error]{\includegraphics[width=\textwidth]{images/eval_prior/stereo_hand_pos_error.pdf} \label{fig:stereo_hand_pos_error}}
-
-\subfloat[orientation error]{\includegraphics[width=\textwidth]{images/eval_prior/stereo_hand_ori_error.pdf}
+\subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/stereo_hand_pos_error.pdf} \label{fig:stereo_hand_pos_error}}
+%
+\subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/stereo_hand_ori_error.pdf}
 \label{fig:stereo_hand_ori_error}}
 \caption{Stereo, task space error for left hand pose}
 \label{fig:stereo_hand_pose_error}
@@ -87,16 +88,16 @@ As the hand position and orientation only depends on the arm configuration but n
 
 
 
-\subsubsection{Asus Xtion}
+\paragraph{Asus Xtion}
 
 Using the structured light sensor Asus Xtion, the behaviour of decreasing error with increasing weight is comparable to that one saw for the stereo matching sensor. Similar to the stereo sensor (figure \ref{fig:stereo_joint_error_hand}), the error on the finger joints reduces significantly when already using a small weight of $0.2$ (figure \ref{fig:xtion_joint_error_hand}).
 In contrast to small the error on the arm joints when using stereo in the phase of moving towards the object (figure \ref{fig:stereo_joint_error_arm}), the error in this phase when using the Xtion sensor is fairly large for no and low weighted prior (figure \ref{fig:xtion_joint_error_arm}).
 
 \begin{figure}
 \centering
-\subfloat[finger joints]{\includegraphics[width=\textwidth]{images/eval_prior/xtion_finger_joint_error.pdf} \label{fig:xtion_joint_error_hand}}
-
-\subfloat[arm joints]{\includegraphics[width=\textwidth]{images/eval_prior/xtion_arm_joint_error.pdf} \label{fig:xtion_joint_error_arm}}
+\subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/xtion_finger_joint_error.pdf} \label{fig:xtion_joint_error_hand}}
+%
+\subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/xtion_arm_joint_error.pdf} \label{fig:xtion_joint_error_arm}}
 \caption{Xtion, joint space error for left finger and arm joints}
 \label{fig:xtion_joint_error}
 \end{figure}
@@ -105,11 +106,41 @@ As before, the hand pose error is only effected by the arm joint errors and thus
 
 \begin{figure}
 \centering
-\subfloat[position error]{\includegraphics[width=\textwidth]{images/eval_prior/xtion_hand_pos_error.pdf} \label{fig:xtion_hand_pos_error}}
-
-\subfloat[orientation error]{\includegraphics[width=\textwidth]{images/eval_prior/xtion_hand_ori_error.pdf} \label{fig:xtion_hand_ori_error}}
+\subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/xtion_hand_pos_error.pdf} \label{fig:xtion_hand_pos_error}}
+%
+\subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/xtion_hand_ori_error.pdf} \label{fig:xtion_hand_ori_error}}
 \caption{Xtion, task space error for left hand pose}
 \label{fig:xtion_hand_pose_error}
+\end{figure}
+
+\subsubsection{Individual Weights}
+
+Individual weighting is applied to only stereo depth data. This weighting scheme enables to weight each combination of joint derivations separately as defined by equation \ref{eqn:objf_indiv_weighted}. For simplicity, only single joint deviations are weighted That is, the weight matrix $Q$ will be a diagonal matrix where only the diagonal elements $q_{i,i}$ will be changed.
+
+In this scenario, three setting of joints are weighted and this scheme is captured in the legend as follows: first, all diagonal elements of $Q$ are set to the weight \emph{q}, second, the 13 finger joints are set to the weight \emph{fingers} and optionally third, the two palm joints (leftWristRoll, leftWristPitch) are set to the value \emph{parm}. E.g., a plot named \texttt{q 1, fingers 0.2, palm 5} indicates that finger joints in the diagonal are weighted by $0.2$, palm joints are weighted with $5$ and the remaining joints are weighted with $1$.
+
+Figure \ref{fig:indiv_joint_error} shows again the joint space error for fingers and arms separately. From these plots we can see that the individual weighting affects the fingers and the arm in different ways. The finger joint error in figure \ref{fig:indiv_joint_error_hand} shows that, raising the palm weights and keeping the remaining constant actually impairs the performance (e.g., compare constant \texttt{q 1, fingers 0.2} and palm weights raised to \texttt{palm 5}). In contrast to this, the arm joint error is reduced when increasing the palm weights and keeping remaining weights constant (e.g., compare constant \texttt{q 0.2, fingers 0.2, palm 5} and palm weights raised to \texttt{q 0.2, fingers 0.2, palm 25}).
+
+\begin{figure}
+\centering
+\subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/stereo_finger_joint_error.pdf} \label{fig:indiv_joint_error_hand}}
+%
+\subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/stereo_arm_joint_error.pdf} \label{fig:indiv_joint_error_arm}}
+
+\caption{Joint space error for individual weighting}
+\label{fig:indiv_joint_error}
+\end{figure}
+
+Again, the arm joints directly influence the pose error of the hand as seen in figure \ref{fig:indiv_pose_error}. By using low weights of $0.2$ for all joints but the palm, and increasing the palm weight from $5$ to $25$, the hand position error is reduced significantly (figure \ref{fig:indiv_hand_pos_error}).
+
+\begin{figure}
+\centering
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/stereo_hand_pos_error.pdf} \label{fig:indiv_hand_pos_error}}
+%
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/stereo_hand_ori_error.pdf} \label{fig:indiv_hand_ori_error}}
+
+\caption{Task space error for individual weighting}
+\label{fig:indiv_pose_error}
 \end{figure}
 
 \subsubsection{Object Position}
@@ -138,8 +169,9 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \subsection{Interpretation}
 
 \begin{itemize}
-\item most beneficial for finger joints
-\item high errors when distracting objects (table, bottle) are present
+\item common joint weights are most beneficial for finger joints
+\item individual weights are most beneficial for finger joints
+\item high errors when distracting objects (table, bottle) are present, hence we find largest improvement in these cases
 \item longer phase of oscillation for higher weights
 \item Asus Xtion has smaller angle of view, e.g. objects having no associated points is more likely
 \end{itemize}

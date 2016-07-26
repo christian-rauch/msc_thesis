@@ -26,13 +26,13 @@ J_{i,j} = \frac{\partial e_i(\mathbf{p})}{\partial p_j} .
 %
 Hence,
 \begin{align}
-\nabla e(\mathbf{p}) &= J^\top e(\mathbf{p}) \\
-H(e) = \nabla^2 e(\mathbf{p}) &= J^\top J +  \sum_{i=1} e_i(\mathbf{p}) \nabla^2 e_i(\mathbf{p}) .
+\nabla e(\mathbf{p}) &= J^\top e(\mathbf{p}) \label{eqn:gn_gradient}\\
+H(e) = \nabla^2 e(\mathbf{p}) &= J^\top J +  \sum_{i=1} e_i(\mathbf{p}) \nabla^2 e_i(\mathbf{p}) \label{eqn:gn_hessian_full}.
 \end{align}
 
 For small $e$, the Hessian $H(e)$ can be approximated by
 \begin{equation}
-H(e) \approx J^\top J
+H(e) \approx J^\top J \label{eqn:gn_hessian}
 \end{equation}
 %
 neglecting the second-order derivatives. This approximation is used in the Gauss-Newton algorithm and the parameter update step becomes
@@ -44,3 +44,57 @@ neglecting the second-order derivatives. This approximation is used in the Gauss
 \end{align}
 
 The parameter update $\Delta\mathbf{p}$ is proportionally driven by the gradient of the objective function and inverse proportional by the approximation of the Hessian.
+
+
+\section{Prior Information}
+
+Prior information can be used in the Gauss-Newton algorithm by modulating the Hessian approximation and the gradient towards the desired state. This is achieved by selecting an objective function and calculating its partial derivatives with respect to the parameter vector. These partial derivatives are used in the Jacobian as shown in equations \ref{eqn:gn_gradient} and \ref{eqn:gn_hessian}.
+
+\subsection{Known Frame Pose}
+
+\subsection{Reported Joint Positions}
+
+We use the reported state of the robot in a way, that we can drag the estimated solution away from possibly distracting perceptions towards the state perceived through the joint encoders.
+%
+Three different kind of objective functions have been selected for this purpose which compute a weighted deviation of the estimated joint configuration $\mathbf{q}$ from reported joint configuration $\mathbf{r}$. For all objective functions, $r_i$ and $q_i$ denote the individual joint positions in their corresponding configuration vector.
+
+\begin{enumerate}
+\item Weighted L2 norm of the estimated joint position deviation:
+\begin{equation}
+e_1 = w \cdot \lVert \mathbf{r} - \mathbf{q} \rVert = w \cdot \sqrt{\sum_{i=1}^N (r_i - q_i)^2} \label{eqn:objf_weightedL2}
+\end{equation}
+with scalar weight $w>0$.
+
+\item L2 norm of the weighted joint deviation:
+\begin{equation}
+e_2 = \lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert = \sqrt{\sum_{i=1}^N w \cdot (r_i - q_i)^2} \label{eqn:objf_L2ofweighted}
+\end{equation}
+with the same scalar weight $w>0$ for all joint deviations.
+
+\item Sum of squares of individually weighted joints:
+\begin{equation}
+e_3 = \lvert \mathbf{r} - \mathbf{q} \rvert^\top Q \lvert \mathbf{r} - \mathbf{q} \rvert = \sum_{i=1}^N \left[ (r_i-q_i) \cdot \sum_{j=1}^N (r_j-q_j) \cdot \omega_{i,j} \right] \label{eqn:objf_indiv_weighted}
+\end{equation}
+with the weight matrix $Q\in\mathbf{R}^{N\times N}$ and its elements $\omega_{i,j}$. As a error metric, the weight matrix $Q$ must be \emph{positive-semidefinite}. That is, $\forall \mathbf{x}\in\mathbf{R}^n: x^\top Q x \geq 0$.
+\end{enumerate}
+
+Whereas the first two objective functions (\ref{eqn:objf_weightedL2} and \ref{eqn:objf_L2ofweighted}) use a common scalar weight for all joint deviations, the third objective function (\ref{eqn:objf_indiv_weighted}) can apply different weights per joint and hence enables to penalize whole parts of the kinematic chain more precise.
+
+The respective partial derivatives for the Jacobian are:
+\begin{enumerate}
+\item Weighted L2 norm of the estimated joint position deviation
+\begin{equation}
+J_{ji} = \frac{\partial e_1}{\partial q_i} = -w \frac{r_i - q_i}{\lVert \mathbf{r} - \mathbf{q} \rVert}
+\end{equation}
+
+\item L2 norm of the weighted joint deviation:
+\begin{equation}
+J_{ji} = \frac{\partial e_2}{\partial q_i} = -w^2 \frac{r_i - q_i}{\lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert}
+\end{equation}
+
+\item Sum of squares of individually weighted joints:
+\begin{equation}
+J_{ji} = \frac{\partial e_3}{\partial q_i} = - \left[ \sum_{j=1}^N d_jq_{i,j}\right] + \left[ \sum_{j=1 \neq i}^N d_jq_{j,i}\right]
+\end{equation}
+\end{enumerate}
+

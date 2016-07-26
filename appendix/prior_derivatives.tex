@@ -1,0 +1,92 @@
+\chapter{Joint Prior Derivation}
+
+This chapter contains the derivation of the joint prior used for the Jacobian in the Hessian approximation and the gradient for the Gauss-Newton algorithm.
+
+\section{Weighted L2 Norm of Deviation}
+
+\subsection{Objective Function}
+\begin{align}
+e &= w \cdot \lVert \mathbf{r} - \mathbf{q} \rVert \\
+&= w \cdot \sqrt{\sum_{i=1}^N (r_i - q_i)^2}
+\end{align}
+
+\subsection{Partial Derivatives}
+For simplicity we substitute
+\begin{align}
+\mathbf{d} &= \mathbf{r} - \mathbf{q} \\
+e &= w \cdot \sqrt{\mathbf{ss}} \\
+ss &= \sum_{i=1}^N d_i^2 .
+\end{align}
+%
+Derivation by chain rule:
+\begin{align}
+\frac{\partial e}{\partial q_i} &= \frac{\partial d_i}{\partial q_i} \cdot \frac{\partial e}{\partial d_i} \\
+\frac{\partial d_i}{\partial q_i} &= -1 \nonumber\\
+\frac{\partial e}{\partial d_i} &= \frac{\partial ss}{\partial d_i} \cdot \frac{\partial e}{\partial ss} \nonumber\\
+\frac{\partial ss}{\partial d_i} &= 2d_i \nonumber\\
+\frac{\partial e}{\partial d_i} &= w + \frac{1}{2} ss^{-\frac{1}{2}} 2 d = -\frac{w \cdot d_i}{\sqrt{\sum_{i=1}^N}d_i^2} \nonumber\\
+\frac{\partial e}{\partial q_i} &= -w \frac{r_i - q_i}{\lVert \mathbf{r} - \mathbf{q} \rVert}
+\end{align}
+
+
+\section{L2 Norm of Weighted Deviation}
+
+\subsection{Objective Function}
+\begin{align}
+e &= \lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert \\
+&= \sqrt{\sum_{i=1}^N w \cdot (r_i - q_i)^2}
+\end{align}
+
+\subsection{Partial Derivatives}
+For simplicity we substitute
+\begin{align}
+\mathbf{d} &= \mathbf{r} - \mathbf{q} \\
+e &= \sqrt{\mathbf{ss}} \\
+ss &= \sum_{i=1}^N (w \cdot d_i)^2 .
+\end{align}
+%
+Derivation by chain rule:
+\begin{align}
+\frac{\partial e}{\partial q_i} &= \frac{\partial d_i}{\partial q_i} \cdot \frac{\partial e}{\partial d_i} \\
+\frac{\partial d_i}{\partial q_i} &= -1 \nonumber\\
+\frac{\partial e}{\partial d_i} &= \frac{\partial ss}{\partial d_i} \cdot \frac{\partial e}{\partial ss} \nonumber\\
+\frac{\partial ss}{\partial d_i} &= 2 w^2 d_i \nonumber\\
+\frac{\partial e}{\partial d_i} &= \frac{w^2 d_i}{\sqrt{ss}} \nonumber\\
+\frac{\partial e}{\partial q_i} &= -w^2 \frac{r_i - q_i}{\lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert}
+\end{align}
+
+
+\section{Individually Weighted Deviations}
+
+\subsection{Objective Function}
+\begin{align}
+e &= \lvert \mathbf{r} - \mathbf{q} \rvert^\top Q \lvert \mathbf{r} - \mathbf{q} \rvert\\
+&= \sum_{i=1}^N \left[ (r_i-q_i) \cdot \sum_{j=1}^N (r_j-q_j) \cdot \omega_{i,j} \right]
+\end{align}
+
+\subsection{Partial Derivatives}
+For simplicity we substitute
+\begin{align}
+\mathbf{d} &= \mathbf{r} - \mathbf{q}.
+\end{align}
+%
+We write the nested sums out
+\begin{align}
+e=& d_1 \cdot (d_1 q_{11} + d_2 q_{12} + \cdots + d_n q_{1n} + \cdots + d_N q_{1N}) \nonumber\\
++& d_2 \cdot (d_2 q_{21} + d_2 q_{22} + \cdots + d_n q_{2n} + \cdots + d_N q_{2N}) \nonumber\\
++& \cdots \nonumber\\
++& d_n \cdot (d_1 q_{n1} + d_2 q_{n2} + \cdots + d_n q_{nn} + \cdots + d_N q_{nN}) \nonumber\\
++& \cdots \nonumber\\
++& d_N \cdot (d_1 q_{N1} + d_2 q_{N2} + \cdots + d_n q_{Nn} + \cdots + d_N q_{NN})
+\end{align}
+%
+and apply the sum and chain rule for derivation:
+\begin{align}
+\frac{\partial e}{\partial q_i} &= \frac{\partial d_i}{\partial q_i} \cdot \frac{\partial e}{\partial d_i} \\
+\frac{\partial d_i}{\partial q_i} &= -1 \nonumber\\
+\frac{\partial e}{\partial d_i} &= \left[ \sum_{j=1}^N d_jq_{i,j}\right] + \left[ \sum_{j=1 \neq i}^N d_jq_{j,i}\right] \\
+\frac{\partial e}{\partial q_i} &= - \left[ \sum_{j=1}^N d_jq_{i,j}\right] + \left[ \sum_{j=1 \neq i}^N d_jq_{j,i}\right]
+\end{align}
+
+The range notation $j=1 \neq i$ denotes that index $j$ iterates $[1,N]$ but skips index $i$.
+If $Q$ is symmetric, the final partial derivative can be written and implemented as a dot product of the vector $\mathbf{d}$ and column- respectively row vectors of $Q$.
