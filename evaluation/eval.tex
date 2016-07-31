@@ -246,6 +246,8 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 
 \subsection{Results}
 
+\subsubsection{Joint Space Error}
+
 \begin{figure}
 \centering
 \subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_joint_error_fingers.pdf} }
@@ -270,6 +272,20 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \item similar conclusions
 \item small improvements with increasing weights
 \item low error after phase 5, when palm turns up
+\end{itemize}
+
+\subsubsection{Position Error}
+
+\begin{figure}
+\centering
+\subfloat[Arm movement]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error_nop.pdf} }
+\subfloat[Finger movement]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_pos_error_nop.pdf} }
+\caption{Hand position error compared to Vicon marker position}
+\end{figure}
+
+\begin{itemize}
+\item reported hand position in general closer to true position
+\item improvement, e.g. better estimate from DART when larger parts of hand are observable
 \end{itemize}
 
 \subsection{Interpretation}
