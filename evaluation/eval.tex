@@ -23,15 +23,15 @@ The phases of the movement are defined in table \ref{tab:movement_phases}.
 \hline
  & \emph{time (s)} & \emph{movement description} \\
 \hline
-1 & 0...5 & upward \\
+1 & 0$\dots$5 & upward \\
 \hline
-2 & 5...10 & downward \\
+2 & 5$\dots$10 & downward \\
 \hline
-3 & 10...20 & towards object \\
+3 & 10$\dots$20 & towards object \\
 \hline
-4 & 20...30 & upward away from object \\
+4 & 20$\dots$30 & upward away from object \\
 \hline
-5 & 30...35 & downward \\
+5 & 30$\dots$35 & downward \\
 \hline
 \end{tabular}
 \caption{Phases of arm movement}
@@ -184,10 +184,56 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \subsection{Setup}
 
 \begin{itemize}
-\item data with moving arm and fingers
+\item 2 data sets: moving arm, moving fingers
 \item no distraction close to manipulator
-\item ground truth vicon marker
+\item ground truth Vicon marker pose
 \end{itemize}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|l|l|}
+\hline
+ & \emph{time (s)} & \emph{movement description} \\
+\hline
+1 & 0$\dots$50 & no movement, hand in lower camera view \\
+\hline
+2 & 50$\dots$54 & arm movement up \\
+\hline
+3 & 85$\dots$90 & hand palm turning up (forearm joint) \\
+\hline
+4 & 125$\dots$130 & hand palm turning down (forearm joint) \\
+\hline
+\end{tabular}
+\caption{Phases of arm movement}
+\label{tab:vic_arm_movement_phases}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|l|l|}
+\hline
+ & \emph{time (s)} & \emph{movement description} \\
+\hline
+1 & 0$\dots$30 & no movement, palm facing towards camera \\
+\hline
+2 & 30$\dots$33 & fingers closing 25\% \\
+\hline
+3 & 56$\dots$59 & fingers closing 50\% \\
+\hline
+4 & 72$\dots$75 & fingers opening \\
+\hline
+5 & 100$\dots$104 & hand palm turning up (forearm joint) \\
+\hline
+6 & 127$\dots$130 & fingers closing 25\% \\
+\hline
+7 & 147$\dots$150 & fingers closing 50\% \\
+\hline
+8 & 156$\dots$159 & fingers opening \\
+\hline
+\end{tabular}
+\caption{Phases of finger movement}
+\label{tab:vic_finger_movement_phases}
+\end{table}
 
 
 \subsection{Hypotheses}
@@ -195,4 +241,40 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \begin{itemize}
 \item no significant improvement by prior because of missing distraction
 \item perceived hand pose closer to vicon state than reported state
+\end{itemize}
+
+
+\subsection{Results}
+
+\begin{figure}
+\centering
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_joint_error_fingers.pdf} }
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_joint_error_arm.pdf} }
+\caption{Arm movement, joint space error}
+\end{figure}
+
+\begin{itemize}
+\item small improvements with increasing weights
+\item low error after phase 2, when arm moved up (less self occlusion, show image)
+\end{itemize}
+
+
+\begin{figure}
+\centering
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_joint_error_fingers.pdf} }
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_joint_error_arm.pdf} }
+\caption{Finger movement, joint space error}
+\end{figure}
+
+\begin{itemize}
+\item similar conclusions
+\item small improvements with increasing weights
+\item low error after phase 5, when palm turns up
+\end{itemize}
+
+\subsection{Interpretation}
+
+\begin{itemize}
+\item less benefits from prior for joint errors
+\item certain states with less self occlusion, hence better fitting
 \end{itemize}
