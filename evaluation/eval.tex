@@ -263,8 +263,8 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 
 \begin{figure}
 \centering
-\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_joint_error_fingers.pdf} }
-\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_joint_error_arm.pdf} }
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_joint_error_fingers.pdf} }
+\subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_joint_error_arm.pdf} }
 \caption{Finger movement, joint space error}
 \end{figure}
 
@@ -274,13 +274,34 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \item low error after phase 5, when palm turns up
 \end{itemize}
 
-\subsubsection{Position Error}
+\subsubsection{Task Space Error}
 
 \begin{figure}
 \centering
-\subfloat[Arm movement]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error_nop.pdf} }
-\subfloat[Finger movement]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_fingers_pos_error_nop.pdf} }
-\caption{Hand position error compared to Vicon marker position}
+\subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error.pdf} }
+\subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_ori_error.pdf} }
+
+\subfloat[position error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error_nop.pdf} }
+\subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_ori_error_nop.pdf} }
+
+\caption{Arm movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
+\end{figure}
+
+\begin{itemize}
+\item reported hand position in general closer to true position
+\item improvement, e.g. better estimate from DART when larger parts of hand are observable
+\end{itemize}
+
+
+\begin{figure}
+\centering
+\subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_pos_error.pdf} }
+\subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_ori_error.pdf} }
+
+\subfloat[position error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_pos_error_nop.pdf} }
+\subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_ori_error_nop.pdf} }
+
+\caption{Finger movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
 \end{figure}
 
 \begin{itemize}
