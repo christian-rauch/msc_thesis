@@ -2,7 +2,22 @@
 
 \section{Prior Information}
 
-This section will evaluate the application of prior information in a setting where a robot hand moves towards and object and back, with two sources of depth data. The two sources of depth information are: enhanced stereo matching using IR dot patterns (denoted as \emph{stereo}) and structured light (denoted as \emph{xtion} as in Asus Xtion).
+This section will evaluate the application of prior information in a setting where a robot hand moves towards an object and back, with two sources of depth data. The two sources of depth information are: enhanced stereo matching using IR dot patterns (denoted as \emph{stereo}) and structured light (denoted as \emph{xtion} as in Asus Xtion).
+
+\subsection{Hypotheses}
+
+As a gradient based approach whose gradient is purely determined by the signed distance function in its base implementation, the assessed tracking approach is mainly driven by observation once it is initialised with the reported state.
+
+%The deviation of the estimated to the reported robot state is measured in joint and task space. Hence, the error is defined as measurements of the reported pose minus measurements of the estimated pose.
+
+\begin{hypothesis}(Distracting sensor readings)\\
+Distracting sensor readings will impair the tracking performance of the manipulator.
+\end{hypothesis}
+
+\begin{hypothesis}(Use of prior information)\\
+Using prior information will reduce the negative effects of distracting sensor readings. Further, increasing weights will enhance this effect.
+\end{hypothesis}
+
 
 \subsection{Setup}
 
@@ -39,15 +54,6 @@ The phases of the movement are defined in table \ref{tab:movement_phases}.
 \end{table}
 
 During the movement, depth data is collected simultaneously from the MultiSense stereo sensor and the Asus Xtion structured light sensor. Hence, the stereo feature matching benefits from the distinctive IR dots.
-
-\subsection{Hypotheses}
-
-The deviation of the estimated to the reported robot state is measured in joint and task space. Hence, the error is defined as measurements of the reported pose minus measurements of the estimated pose.
-
-\begin{itemize}
-\item deviation to reported pose decreases with increasing weight
-\item distraction from surrounding points from objects
-\end{itemize}
 
 \subsection{Results}
 
@@ -179,9 +185,27 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 
 
 
-\section{Filtered Manipulator Perception}
+\section{True Hand Pose Error}
+
+An experiment is conducted that contains depth data measurement from the manipulator without distracting readings close to the manipulator. As in a previous experiment, forward kinematics on the reported and estimated joint configuration will be used to obtain the pose of the manipulator in task space. Additionally, the Vicon system introduced earlier provides ground truth data of the hand palm pose.
+
+
+%This experiment will evaluate the effect of prior weights on scenes without distracting sensor readings.
+
+
+\subsection{Hypotheses}
+
+
+
+\begin{itemize}
+\item no significant improvement by prior because of missing distraction
+\item perceived hand pose closer to vicon state than reported state
+\end{itemize}
+
 
 \subsection{Setup}
+
+
 
 \begin{itemize}
 \item 2 data sets: moving arm, moving fingers
@@ -234,14 +258,6 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \caption{Phases of finger movement}
 \label{tab:vic_finger_movement_phases}
 \end{table}
-
-
-\subsection{Hypotheses}
-
-\begin{itemize}
-\item no significant improvement by prior because of missing distraction
-\item perceived hand pose closer to vicon state than reported state
-\end{itemize}
 
 
 \subsection{Results}
@@ -315,3 +331,78 @@ A snapshot of the perceived point cloud is depicted in figure \ref{fig:bottle_po
 \item less benefits from prior for joint errors
 \item certain states with less self occlusion, hence better fitting
 \end{itemize}
+
+
+\section{Joint Calibration}
+
+\begin{itemize}
+\item average error for estimated state
+\item optimization of on part of the dataset
+\item test on other part of dataset
+\item show hand and vicon frame before and after calibration
+\end{itemize}
+
+\begin{figure}
+\centering
+\subfloat[Arm movement]{\includegraphics[width=0.5\textwidth]{images/offset/dart_arm_offset.pdf} }
+\subfloat[Finger movement]{\includegraphics[width=0.5\textwidth]{images/offset/dart_finger_offset.pdf} }
+
+\caption{Estimated offsets of reported joint configuration to estimated configuration}
+\end{figure}
+
+
+\begin{table}
+\centering
+% table with aligned decimal points
+\begin{tabular}{|l||S[table-format=2.5]|S[table-format=2.5]||S[table-format=2.5]|S[table-format=2.5]||>{\columncolor[gray]{0.9}}S[table-format=2.8]|}
+\hline
+ & \multicolumn{5}{c|}{joint positions offsets} \\
+\hline
+ & \multicolumn{2}{c||}{arm dataset} & \multicolumn{2}{c||}{finger dataset} &  \multicolumn{1}{c|}{complete} \\
+\hline
+\multicolumn{1}{|c||}{\textit{joint name}} & \textit{dart} & \textit{vicon} & \textit{dart} & \textit{vicon} & \multicolumn{1}{c|}{\textit{vicon}} \\
+\hline
+\hline
+\texttt{torsoYaw} &  & 0.00059 &  & • & 0.01319969 \\
+\hline
+\texttt{torsoPitch} &  & 0.01166 &  & • & 0.01062786 \\
+\hline
+\texttt{torsoRoll} &  & 0.00510 &  & • & -0.00483674 \\
+\hline
+\texttt{leftShoulderPitch} & -0.05627 & 0.01258 & -0.01713 & • & 0.00461001 \\
+\hline
+\texttt{leftShoulderRoll} & -0.12866 & 0.00288 & -0.11559 & • & -0.0095907 \\
+\hline
+\texttt{leftShoulderYaw} & -0.00503 & 0.01045 & -0.09895 & • & 0.03021091 \\
+\hline
+\texttt{leftElbowPitch} & 0.14880 & 0.00818 & 0.08986 & • & 0.00446155 \\
+\hline
+\texttt{leftForearmYaw} & -0.16338 & 0.00166 & -0.08339 & • & 0.00580287 \\
+\hline
+\texttt{leftWristRoll} & -0.18549 & 0.01169 & -0.35942 & • & 0.02037348 \\
+\hline
+\texttt{leftWristPitch} & 0.00620 & 0.01953 & 0.00195 & • & 0.02790135 \\
+\hline
+\end{tabular}
+\caption{Joint offset for kinematic chain \textit{pelvis} to \textit{leftPalm} for reported joint positions values.}
+\end{table}
+
+
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c||c|c||c|c|}
+\hline
+\multicolumn{2}{|c||}{data set} & \multicolumn{4}{c|}{Joint position offset} \\
+\hline
+ & & \multicolumn{2}{c||}{constant} & \multicolumn{2}{c|}{linear} \\
+\hline
+\textit{training set} & \textit{test set} & \textit{training error} & \textit{test error} & \textit{training error} & \textit{test error} \\
+\hline
+arm & finger & 0.0487 & 0.0260 & 0.0447 & 0.0217 \\
+\hline
+finger & arm & 0.00853 & 0.06859 & • & • \\
+\hline
+\end{tabular}
+\caption{Training and test error for calibrated joints}
+\end{table}
