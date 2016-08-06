@@ -8,8 +8,6 @@ This section will evaluate the application of prior information in a setting whe
 
 In the base implementation of the assessed tracking approach, its gradient is mainly determined by the signed distance function. Hence, the optimization is mainly driven by the observation once the iteration is initialized with the reported state. Using additional information that effects the gradient can improve the state estimation by driving it away from distracting observations.
 
-%The deviation of the estimated to the reported robot state is measured in joint and task space. Hence, the error is defined as measurements of the reported pose minus measurements of the estimated pose.
-
 \begin{hypothesis}(Distracting sensor readings)\\
 Distracting sensor readings will impair the tracking performance of the manipulator.
 \end{hypothesis}
@@ -200,31 +198,38 @@ The assessed prior information is by design only applicable to the robot model; 
 
 \section{True Hand Pose Error}
 
-An experiment is conducted that contains depth data measurement from the manipulator without distracting readings close to the manipulator. As in a previous experiment, forward kinematics on the reported and estimated joint configuration will be used to obtain the pose of the manipulator in task space. Additionally, the Vicon system introduced earlier provides ground truth data of the hand palm pose.
-
-
-%This experiment will evaluate the effect of prior weights on scenes without distracting sensor readings.
+An experiment is conducted that contains depth data measurement from the manipulator alone, without distracting depth readings nearby. As in a previous experiment, forward kinematics on the reported and estimated joint configuration will be used to obtain the pose of the manipulator in task space. Additionally, the Vicon system introduced earlier provides ground truth data of the hand palm pose.
 
 
 \subsection{Hypotheses}
 
+The experiment has been designed to (1) apply the tracking of the manipulator in a scene without distractions, and (2) to compare the reported and estimated robot configuration with the as ground truth defined poses reported by the Vicon tracking system.
 
+Without distracting sensor readings, we expect that the use of the joint position prior will not have a strong impact on the deviation from the reported robot configuration. If the manipulator is fully observed in the depth data, tracking the manipulator should result in a hand pose close to the true hand pose which itself should coincide with the reported hand pose.
 
-\begin{itemize}
-\item no significant improvement by prior because of missing distraction
-\item perceived hand pose closer to vicon state than reported state
-\end{itemize}
+\begin{hypothesis}(No effect of joint position prior)\\
+There will be no significant effect of applying joint position prior on observations containing solely the manipulator.
+\end{hypothesis}
+
+\begin{hypothesis}(Matching hand pose)\\
+Reported and estimated left hand pose agree with the true measured hand pose.
+\end{hypothesis}
 
 
 \subsection{Setup}
 
+The robot is placed in nominal position and its manipulator is moving from this state into the field of view of the camera (\cref{fig:vicon_free_movement}). To observe the manipulator and its fingers from different perspectives, the hand and the fingers are actuated by a certain degree. The data set is therefore divided into two parts: \textit{arm movement}, where mainly the shoulder and the forearm joints are commanded, and \textit{finger movement} where all fingers are actuated at the same time. During the complete experiment, Vicon markers are attached to the pelvis and backside of the palm to track the orientation of both robot frames.
 
+The \textit{arm movement} sequence contains three phases (\cref{tab:vic_arm_movement_phases}) of which 3 final states are depicted in \cref{fig:arm_movement_states}. The \textit{finger movement} sequence contains 7 phases in total (\cref{tab:vic_finger_movement_phases}) of which 3 states are depicted in \cref{fig:finger_movement_states}. Both sequences show that due to self-occlusion, the manipulator cannot be fully observed in a single time instance. In states where the palm is facing the robot or down, the Vicon marker can be observed in the point cloud data.
 
-\begin{itemize}
-\item 2 data sets: moving arm, moving fingers
-\item no distraction close to manipulator
-\item ground truth Vicon marker pose
-\end{itemize}
+It can be noticed that the reported state of the finger joint positions does not resemble the true articulation.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{images/eval_vicon/sequence/setting.png}
+\caption{Setup in which a robot is observing its own manipulator.}
+\label{fig:vicon_free_movement}
+\end{figure}
 
 \begin{table}
 \centering
@@ -244,6 +249,18 @@ An experiment is conducted that contains depth data measurement from the manipul
 \caption{Phases of arm movement}
 \label{tab:vic_arm_movement_phases}
 \end{table}
+
+\begin{figure}
+\centering
+\begin{tabular}{c:c:c}
+\textit{t=55} & \textit{t=91} & \textit{t=132} \\
+\includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/obs_55.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/obs_91.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/obs_132.png} \\
+\includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/rep_55.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/rep_91.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/arm_movement/rep_132.png} \\
+\end{tabular}
+\caption{Arm movement: Sequence of states in which the manipulator is observed from different viewing angles. \textit{Upper row:} point cloud observation, \textit{Lower row:} reported state.}
+\label{fig:arm_movement_states}
+\end{figure}
+
 
 \begin{table}
 \centering
@@ -271,6 +288,17 @@ An experiment is conducted that contains depth data measurement from the manipul
 \caption{Phases of finger movement}
 \label{tab:vic_finger_movement_phases}
 \end{table}
+
+\begin{figure}
+\centering
+\begin{tabular}{c:c:c}
+\textit{t=19} & \textit{t=33} & \textit{t=61} \\
+\includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/obs_19.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/obs_33.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/obs_61.png} \\
+\includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/rep_19.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/rep_33.png} & \includegraphics[width=0.3\textwidth]{images/eval_vicon/sequence/finger_movement/rep_61.png} \\
+\end{tabular}
+\caption{Finger movement: Sequence of states in which the fingers are close to certain degree (open, closed $\sim 25\%$, closed $\sim 50\%$). \textit{Upper row:} point cloud observation, \textit{Lower row:} reported state.}
+\label{fig:finger_movement_states}
+\end{figure}
 
 
 \subsection{Results}
