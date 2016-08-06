@@ -192,16 +192,11 @@ A snapshot of the perceived point cloud is depicted in \cref{fig:bottle_point_cl
 
 \subsection{Interpretation}
 
-\begin{itemize}
-\item common joint weights are most beneficial for finger joints
-\item individual weights are most beneficial for finger joints
-\item high errors when distracting objects (table, bottle) are present, hence we find largest improvement in these cases
-\item longer phase of oscillation for higher weights
-\item Asus Xtion has smaller angle of view, e.g. objects having no associated points is more likely
-\end{itemize}
+With the signed distance as the only objective function, the optimization is driven away from the reported state, with which it is initialized, whenever nearby but unrelated depth data is assigned to the robot model. By augmenting the objective function with an objective related to the reported state as the reference, these issues can be faced.
 
+Across all weighting schemes and depth sources, we can see that weighting in respect to the deviation from the reported pose: (1) reduces the deviation of finger joint positions over the whole sequence of the trials by already choosing a small prior weight, (2) contributes most in movement phases that follow states where the manipulator is in contact with the scene (table, object). The application of individual weighting of joint deviations showed that by selecting specific joints, the task space error can be reduced while keeping the flexibility of preferring other objectives for remaining parts of the robot model. For both assessed weighting schemes, it turned out that weights need to be chosen carefully to prevent overshooting on the reported state and hence the oscillation of estimate.
 
-
+The assessed prior information is by design only applicable to the robot model; the tracked object remains to be driven by the signed distance function and hence relies on relevant depth data assigned to the object model. We saw that this is an issue for observing from an low angle to the object's principal axes.
 
 \section{True Hand Pose Error}
 
