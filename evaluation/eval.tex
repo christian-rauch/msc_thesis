@@ -155,7 +155,7 @@ In this scenario, three setting of joints are weighted and this scheme is captur
 \label{fig:indiv_joint_error}
 \end{figure}
 
-Again, the arm joints directly influence the pose error of the hand as seen in \cref{fig:indiv_pose_error}. \Cref{fig:indiv_hand_pos_error} shows that the hand position mostly benefits from using some prior $>1$ on the palm joints whereas weighting the remaining joints does contribute to driving the solution towards the reported hand position. For the hand orientation error in \cref{fig:indiv_hand_ori_error}, the error is usually reduced if the weights on the palm joints are increased (e.g. $1$ to $5$, or $5$ to $25$) and remaining joints keep their weights.
+Again, the arm joints directly influence the pose error of the hand as seen in \cref{fig:indiv_pose_error}. \Cref{fig:indiv_hand_pos_error} shows that the hand position mostly benefits from using some weight $>1$ on the palm joints whereas weighting the remaining joints does not contribute to driving the solution towards the reported hand position. For the hand orientation error in \cref{fig:indiv_hand_ori_error}, the error is usually reduced if the weights on the palm joints are increased (e.g. $1$ to $5$, or $5$ to $25$) and remaining joints keep their weights. We can also see that using small weights ($q=0.2$) for all joints but the palm actually results in a estimated position closer to the reported position than what is achieved by larger weights ($q=1$).
 
 \begin{figure}
 \centering
