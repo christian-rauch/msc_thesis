@@ -201,6 +201,7 @@ The assessed prior information is by design only applicable to the robot model; 
 
 
 \section{True Hand Pose Error}
+\label{sec:hand_pose_error}
 
 An experiment is conducted that contains depth data measurement from the manipulator alone, without distracting depth readings nearby. As in a previous experiment, forward kinematics on the reported and estimated joint configuration will be used to obtain the pose of the manipulator in task space. Additionally, the Vicon system introduced earlier provides ground truth data of the hand palm pose.
 
@@ -383,22 +384,28 @@ Tracking with manipulator only observed data showed, that there is still an effe
 
 The observation of the Vicon marker in the depth data of the manipulator, e.g. when the hand palm is facing down, is not examined in this evaluation. These markers are required to obtain the ground truth data but they certainly provide  readings that could distract the optimization.
 
-\begin{itemize}
-\item less benefits from prior for joint errors
-\item certain states with less self occlusion, hence better fitting
-\end{itemize}
-
 An interesting result from this evaluation is that neither the reported nor the estimated hand pose agree with the Vicon hand pose. The measured discrepancy of reported position and Vicon marker position is at least \SI{1.5}{\cm}. Using strong prior in such scenario thus can only provide an optimal solution to some extent, e.g. as long as the reported configuration is closer to the true configuration than the estimate. \Cref{hyp:matching_hand_pose} is considered as not verified and needs further investigation.
 
 
 \section{Joint Calibration}
 
-\begin{itemize}
-\item average error for estimated state
-\item optimization of on part of the dataset
-\item test on other part of dataset
-\item show hand and vicon frame before and after calibration
-\end{itemize}
+The data set collected in the previous experiment in \cref{sec:hand_pose_error} will be used to investigate the issue of mismatching hand poses of the reported and estimated state from the Vicon hand pose that is considered as ground truth.
+
+\subsection{Hypothesis}
+
+Under the assumption that the tracking obtains the true robot configuration, that is the estimated hand pose agrees with the Vicon hand pose, the joint position discrepancy (1) from reported configuration to configuration at Vicon pose, and (2) from reported configuration to estimated configuration, should be similar.
+
+\begin{hypothesis}(Matching joint offset)\\
+The joint position offset from reported configuration to both Vicon configuration and estimated configuration are similar.
+\label{hyp:matching_joint_offset}
+\end{hypothesis}
+
+\subsection{Results}
+
+The individual arm joint position offsets for the arm movement and finger movement data sets (\cref{fig:estimated_offsets}) show that the discrepancy of estimated to reported joints position is mostly not constant overt time. Considering that the hand is directly connected to the forearm by two joints (\texttt{leftWristRoll/Pitch}), it is interesting to notice that \texttt{leftWristPitch} does not have a discrepancy to the reported joint position value.
+
+\Cref{tab:avg_offsets_comparison} summarizes the offsets for the estimated (\textit{dart}, averaged over time) and reported (\textit{vicon}, optimized on pose) joint position offsets. As the manipulator tracking considers the kinematic chain from image centre to palm and the Vicon marker pose gives the final transformation for the kinematic chain from pelvis to palm, the arm joints are the common joints whose offsets are considered for comparison.
+The correlation between the averaged \textit{dart} offsets and \textit{vicon} offsets are given as $0.3366$ for the arm data set and $0.1054$ for the finger data set.
 
 \begin{figure}
 \centering
@@ -406,6 +413,7 @@ An interesting result from this evaluation is that neither the reported nor the 
 \subfloat[Finger movement]{\includegraphics[width=0.5\textwidth]{images/offset/dart_finger_offset.pdf} }
 
 \caption{Estimated offsets of reported joint configuration to estimated configuration}
+\label{fig:estimated_offsets}
 \end{figure}
 
 
@@ -442,18 +450,31 @@ An interesting result from this evaluation is that neither the reported nor the 
 \texttt{leftWristPitch} & 0.00620 & 0.01953 & 0.00195 & -0.00389 & 0.02790135 \\
 \hline
 \end{tabular}
-\caption{Joint offset for kinematic chain \textit{pelvis} to \textit{leftPalm} for reported joint positions values.}
+\caption{Joint position offset for kinematic chain \textit{pelvis} to \textit{leftPalm} for reported joint positions values. Estimated offsets in column \textit{dart}, reported offsets in column \textit{vicon} for data set. The last column contains the optimization result for the entire data set.}
+\label{tab:avg_offsets_comparison}
 \end{table}
 
+
+To assess the quality of fitting the offset model onto the \textit{arm movement} and \textit{finger movement} data set, two offset models are fitted each on either of the data sets and tested on the other data set. The offset models that map the reported joint position to the optimal joint position are the constant mapping
+\begin{equation}
+q_{opt} = q_{offset} + q_{reported}
+\end{equation}
+in which only $q_{offset}$ is optimized per joint over all data, and the linear mapping
+\begin{equation}
+q_{opt} = q_{offset} + m_1 \cdot q_{reported}
+\end{equation}
+in which $q_{offset}$ and $m_1$ are optimized per joint over all data.
+
+The training and test errors are the costs of the objective function given the optimal data on the training and test set respectively. Comparing these training and test errors on both data sets (\cref{tab:offset_training_test_error}) indicates overfitting on the \textit{finger movement} data set (test error is larger than training error) for both offset mappings. This is likely caused by the small range of arm movements during the finger data set.
 
 
 \begin{table}
 \centering
 \begin{tabular}{|c|c||c|c||c|c|}
 \hline
-\multicolumn{2}{|c||}{data set} & \multicolumn{4}{c|}{Joint position offset} \\
+\multicolumn{2}{|c||}{} & \multicolumn{4}{c|}{joint position offset} \\
 \hline
- & & \multicolumn{2}{c||}{constant} & \multicolumn{2}{c|}{linear} \\
+\multicolumn{2}{|c||}{data set}  & \multicolumn{2}{c||}{constant} & \multicolumn{2}{c|}{linear} \\
 \hline
 \textit{training set} & \textit{test set} & \textit{training error} & \textit{test error} & \textit{training error} & \textit{test error} \\
 \hline
@@ -462,5 +483,27 @@ arm & finger & 0.0487 & 0.0260 & 0.0447 & 0.0217 \\
 finger & arm & 0.00853 & 0.06859 & 0.00458 & 0.06636 \\
 \hline
 \end{tabular}
-\caption{Training and test error for calibrated joints}
+\caption{Training and test error for calibration using a constant and linear offset.}
+\label{tab:offset_training_test_error}
 \end{table}
+
+After applying the constant offsets optimized on the entire data set to the reported pose, the new reported hand pose error is reduced by usually more than \SI{1}{\cm} (compare \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movement} with \cref{fig:corrected_hand_pose}).
+
+\begin{figure}
+\centering
+\subfloat[Arm movement, hand position]{\includegraphics[width=0.5\textwidth]{images/offset/corr_arm_rep_hand_pos_error.pdf} }
+\subfloat[Arm movement, hand orientation]{\includegraphics[width=0.5\textwidth]{images/offset/corr_arm_rep_hand_ori_error.pdf} }
+
+\subfloat[Finger movement, hand position]{\includegraphics[width=0.5\textwidth]{images/offset/corr_finger_rep_hand_pos_error.pdf} }
+\subfloat[Finger movement, hand orientation]{\includegraphics[width=0.5\textwidth]{images/offset/corr_finger_rep_hand_ori_error.pdf} }
+
+\caption{Reported hand pose error after applying joint position offsets. Top row: arm movement data set, Bottom row: finger movement data set.}
+\label{fig:corrected_hand_pose}
+\end{figure}
+
+
+\subsection{Interpretation}
+
+The comparison of joint offsets estimated by the tracker and optimized on the reported Vicon marker showed no correlation. Furthermore, time elapse of the estimated offsets revealed no systematic discrepancy from the reported joint position values. \Cref{hyp:matching_joint_offset} is therefore considered as not verified.
+
+However, the offset optimization on the true pose showed that the reported hand pose error can be reduced by a constant individual joint offset.
