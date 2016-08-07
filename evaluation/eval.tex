@@ -10,10 +10,12 @@ In the base implementation of the assessed tracking approach, its gradient is ma
 
 \begin{hypothesis}(Distracting sensor readings)\\
 Distracting sensor readings will impair the tracking performance of the manipulator.
+\label{hyp:distracting_readings}
 \end{hypothesis}
 
 \begin{hypothesis}(Use of prior information)\\
 Using prior information will reduce the negative effects of distracting sensor readings. Further, increasing weights will enhance this effect.
+\label{hyp:prior_information}
 \end{hypothesis}
 
 
@@ -191,11 +193,12 @@ A snapshot of the perceived point cloud is depicted in \cref{fig:bottle_point_cl
 
 \subsection{Interpretation}
 
-With the signed distance as the only objective function, the optimization is driven away from the reported state, with which it is initialized, whenever nearby but unrelated depth data is assigned to the robot model. By augmenting the objective function with an objective related to the reported state as the reference, these issues can be faced.
+With the signed distance as the only objective function, the optimization is driven away from the reported state, with which it is initialized, whenever nearby but unrelated depth data is assigned to the robot model. Hence we conclude that \cref{hyp:distracting_readings} is true. By augmenting the objective function with an objective related to the reported state as the reference, these issues can be faced.
 
-Across all weighting schemes and depth sources, we can see that weighting in respect to the deviation from the reported pose: (1) reduces the deviation of finger joint positions over the whole sequence of the trials by already choosing a small prior weight, (2) contributes most in movement phases that follow states where the manipulator is in contact with the scene (table, object). The application of individual weighting of joint deviations showed that by selecting specific joints, the task space error can be reduced while keeping the flexibility of preferring other objectives for remaining parts of the robot model. For both assessed weighting schemes, it turned out that weights need to be chosen carefully to prevent overshooting on the reported state and hence the oscillation of estimate.
+Across all weighting schemes and depth sources, we can see that weighting in respect to the deviation from the reported pose: (1) reduces the deviation of finger joint positions over the whole sequence of the trials by already choosing a small prior weight, (2) contributes most in movement phases that follow states where the manipulator is in contact with the scene (table, object). The application of individual weighting of joint deviations showed that by selecting specific joints, the task space error can be reduced while keeping the flexibility of preferring other objectives for remaining parts of the robot model. For both assessed weighting schemes, it turned out that weights need to be chosen carefully to prevent overshooting on the reported state and hence the oscillation of estimate. Neglecting the issue of oscillating around the optimum, \cref{hyp:prior_information} is also considered as verified.
 
 The assessed prior information is by design only applicable to the robot model; the tracked object remains to be driven by the signed distance function and hence relies on relevant depth data assigned to the object model. We saw that this is an issue for observing from an low angle to the object's principal axes.
+
 
 \section{True Hand Pose Error}
 
@@ -210,10 +213,12 @@ Without distracting sensor readings, we expect that the use of the joint positio
 
 \begin{hypothesis}(No effect of joint position prior)\\
 There will be no significant effect of applying joint position prior on observations containing solely the manipulator.
+\label{hyp:no_prior_effect}
 \end{hypothesis}
 
 \begin{hypothesis}(Matching hand pose)\\
 Reported and estimated left hand pose agree with the true measured hand pose.
+\label{hyp:matching_hand_pose}
 \end{hypothesis}
 
 
@@ -316,33 +321,32 @@ The shown errors are the L2 norm of the joint and task space errors as defined i
 
 \subsubsection{Joint Space Error}
 
+The joint space error for both sequences is shown separately for finger and arm joints in \cref{fig:am_joint_error,fig:fm_joint_error}. It can be noticed that increasing prior weights reduces the joint position deviation also in the case of less distracting observations. In contrast, the effect is not as significant as it is for observations with distractions due to close solutions after proper initialisation.
+
 \begin{figure}
 \centering
 \subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_joint_error_fingers.pdf} }
 \subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_joint_error_arm.pdf} }
 \caption{Arm movement, joint space error}
+\label{fig:am_joint_error}
 \end{figure}
-
-\begin{itemize}
-\item small improvements with increasing weights
-\item low error after phase 2, when arm moved up (less self occlusion, show image)
-\end{itemize}
-
 
 \begin{figure}
 \centering
 \subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_joint_error_fingers.pdf} }
 \subfloat[]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_joint_error_arm.pdf} }
 \caption{Finger movement, joint space error}
+\label{fig:fm_joint_error}
 \end{figure}
 
-\begin{itemize}
-\item similar conclusions
-\item small improvements with increasing weights
-\item low error after phase 5, when palm turns up
-\end{itemize}
+In states where the palm is facing towards the camera and large continuous hand parts can be observed, the tracked configuration is already so close to the reported configuration, that an additional joint position prior has no effect. This is the case after phase 2 for the \textit{arm movement} data set ($55\leq t \leq84$) and phase 5 for the \textit{finger movement} data set ($t \geq 105$).
+
 
 \subsubsection{Task Space Error}
+
+For the evaluation of the task space error, we compare the reported and the estimated hand pose with the hand pose from the Vicon tracking system. The shown errors are the L2 norm of the 3D pose and 3D rotation difference from Vicon pose to reported and estimated pose.
+
+The error plots in \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movement} compare the effect of prior weighting on the estimated configurations against the reported configuration (which is not effected by the prior). Comparison plots for the task space error on the reported and on the estimated pose without prior are shown separately for a clearer distinction.
 
 \begin{figure}
 \centering
@@ -353,13 +357,12 @@ The shown errors are the L2 norm of the joint and task space errors as defined i
 \subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_ori_error_nop.pdf} }
 
 \caption{Arm movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
+\label{fig:vic_error_arm_movement}
 \end{figure}
 
-\begin{itemize}
-\item reported hand position in general closer to true position
-\item improvement, e.g. better estimate from DART when larger parts of hand are observable
-\end{itemize}
+The following general statements can be made: (1) neither the reported nor the estimated hand poses agree with the Vicon hand pose, (2) the reported hand pose is closer to the Vicon hand pose than the estimated hand pose for most of the duration.
 
+From both data sets it can be noticed that the estimated pose is closer to the Vicon pose in the same states where the joint deviation from the reported configuration is small. Especially the orientation error drops significantly in these states where large portions of the palm are observable (\textit{arm movement}: $55\leq t \leq84$, \textit{finger movement}: $t \geq 105$). In contrast, the error increases when the manipulator is observed from the side, e.g. when fingers are occluding each other.
 
 \begin{figure}
 \centering
@@ -370,19 +373,22 @@ The shown errors are the L2 norm of the joint and task space errors as defined i
 \subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_ori_error_nop.pdf} }
 
 \caption{Finger movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
+\label{fig:vic_error_finger_movement}
 \end{figure}
 
-\begin{itemize}
-\item reported hand position in general closer to true position
-\item strong prior reduces orientation error
-\end{itemize}
 
 \subsection{Interpretation}
+
+Tracking with manipulator only observed data showed, that there is still an effect of using prior information. However, this effect is not as significant as in distracting scenes and it is minimal in states where large portions of the manipulator can be observed in a single time instance. The performance of the tracking and hence the effect of prior information is view dependent. Prior information is still useful for inconclusive observations, e.g. self-occlusion. Despite this, \cref{hyp:no_prior_effect} is considered as true.
+
+The observation of the Vicon marker in the depth data of the manipulator, e.g. when the hand palm is facing down, is not examined in this evaluation. These markers are required to obtain the ground truth data but they certainly provide  readings that could distract the optimization.
 
 \begin{itemize}
 \item less benefits from prior for joint errors
 \item certain states with less self occlusion, hence better fitting
 \end{itemize}
+
+An interesting result from this evaluation is that neither the reported nor the estimated hand pose agree with the Vicon hand pose. The measured discrepancy of reported position and Vicon marker position is at least \SI{1.5}{\cm}. Using strong prior in such scenario thus can only provide an optimal solution to some extent, e.g. as long as the reported configuration is closer to the true configuration than the estimate. \Cref{hyp:matching_hand_pose} is considered as not verified and needs further investigation.
 
 
 \section{Joint Calibration}
