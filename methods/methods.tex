@@ -1,5 +1,8 @@
 \chapter{Methods}
 
+\section{Robotic Platform}
+
+
 \section{Signed Distance Function}
 
 
@@ -127,3 +130,58 @@ J_{ji} = \frac{\partial e_3}{\partial q_i} = - \left[ \sum_{j=1}^N d_jq_{i,j}\ri
 
 \section{Ground Truth Data Collection}
 
+To evaluate the tracking performance and verify the effect of the joint position prior, reference measurements of the true state of the robot are required. The Vicon motion caption system is selected to externally track the pose of IR reflective markers rigidly attached to the robot.
+
+\subsection{Setup}
+
+To obtain the true transformation from the pelvis frame to the left hand palm frame, reflective markers are rigidly mounted with standoffs to the specific robot frames. The photograph in \cref{fig:vicon_marker} shows the highlighted location of the markers on the \texttt{pelvis} frame (green) and the \texttt{leftPalm} frame (red).
+
+\begin{figure}
+\captionsetup{width=0.4\textwidth}
+\centering
+\includegraphics[width=0.4\textwidth]{images/vicon_pose/vicon_marker_col.jpg}
+\caption{Location of Vicon marker on pelvis (green) and left hand (red)}
+\label{fig:vicon_marker}
+\end{figure}
+
+
+\subsection{Hand Pose}
+
+Each group of markers has its own coordinate system with its origin in the centre.
+The drawing in \cref{fig:transform_vicon_robot} visualizes the transformations between the Vicon world frame, the Vicon marker frames and the robot frames.
+The transformations $T_{w \rightarrow vp}$ and $T_{w \rightarrow vh}$ are the reported poses of the Vicon marker in the world frame.
+To obtain the transformation $T_{p \rightarrow h}$, which gives the hand pose in the pelvis frame, we need to find the rigid transformation between the Vicon marker and robot frame ($T_{m \rightarrow p}$ and $T_{m \rightarrow h}$).
+
+\begin{figure}
+\captionsetup{width=0.52\textwidth}
+\centering
+\includegraphics[width=0.5\textwidth]{images/vicon_pose/vicon_transforms.pdf}
+\caption{Transformations between Vicon markers (\textit{pelvis} - green, \textit{hand} - red) and robot frames}
+\label{fig:transform_vicon_robot}
+\end{figure}
+
+The rigid transformation between marker and robot frames can be obtained by a least-squares optimization on corresponding points in both frames \cite{Umeyama1991}. Given corresponding points $m_i$ in marker frame and $x_i$ in the robot frame, the optimal projection of marker points from the marker frame into corresponding points in the robot frame becomes
+\begin{equation}
+T_{x \rightarrow m} = \arg\min_{R,t} \frac{1}{N} \sum_{i=1}^N \lVert x_i - \left( R \cdot m_i + t \right) \rVert_2
+\label{eqn:least_squares_transformation_estimation}
+\end{equation}
+where $T_{x \rightarrow m}$ denotes the homogeneous transformation matrix containing the rotation matrix $R$ and the translation vector $t$. The points $x_i$ in the robot frame are here interchangeable for points $p_i$ in the \texttt{pelvis} frame and $h_i$ in the \texttt{leftPalm} frame.
+
+%The Vicon system provides the pose of the marker frame in the world coordinate frame. That is the inverse of the transformations $T_{w \rightarrow vp}^{-1}$ and $T_{w \rightarrow vh}^{-1}$, e.g. the projection of the marker into the world frame.
+The pose of the \texttt{pelvis} and \texttt{leftPalm} frame in the Vicon world frame can be expressed by the transformations
+\begin{align}
+T_{w \rightarrow p} &= T_{w \rightarrow vp} \cdot T_{p \rightarrow m} = T_{w \rightarrow vp} \cdot T_{m \rightarrow p}^{-1} \\
+T_{w \rightarrow h} &= T_{w \rightarrow vh} \cdot T_{h \rightarrow m} = T_{w \rightarrow vh} \cdot T_{m \rightarrow h}^{-1} .
+\end{align}
+
+The transformations between these robot frames then finally becomes
+\begin{align}
+T_{w \rightarrow h} &= T_{w \rightarrow p} \cdot T_{p \rightarrow h} \\
+T_{w \rightarrow vh} \cdot T_{m \rightarrow h}^{-1} &= T_{w \rightarrow vp} \cdot T_{m \rightarrow p}^{-1} \cdot T_{p \rightarrow h} \nonumber \\
+T_{p \rightarrow h} &= \left( T_{w \rightarrow vp} \cdot T_{m \rightarrow p}^{-1} \right)^{-1} \cdot T_{w \rightarrow vh} \cdot T_{m \rightarrow h}^{-1} \label{eqn:hand_pose_from_vicon} .
+\end{align}
+
+Given the transformations of the Vicon markers ($T_{w \rightarrow vp}$ and $T_{w \rightarrow vh}$) at each time instance, and the rigid transformation between these markers and the robot frame ($T_{m \rightarrow p}$ and $T_{m \rightarrow h}$) we can recover the true pose of the hand in the pelvis frame ($T_{p \rightarrow h}$) using \cref{eqn:hand_pose_from_vicon}.
+
+
+\subsection{Joint Position Offsets}

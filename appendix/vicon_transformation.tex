@@ -1,0 +1,88 @@
+\chapter{Vicon Frame To Robot Frame Transformations}
+
+This chapter aggregates the position of the Vicon markers in each marker frame and robot frame. Coordinates are listed in their corresponding order and given in meters. The transformation from robot frame to marker frame is estimated using least-squares on the objective function defined in \cref{eqn:least_squares_transformation_estimation}.
+
+\section{Pelvis}
+
+\subsection{Marker Position}
+
+Vicon marker in marker frame:
+\begin{equation}
+M = 0.001 \cdot \begin{bmatrix}
+\begin{array}{S[table-format=3.5]S[table-format=5.5]S[table-format=3.5]}
+42.43020 & 0.38291 & -75.74550 \\
+36.80328 & 0.23377 & -16.98103 \\
+-24.30613 & -119.75513 & 47.44633 \\
+-54.92734 & 119.13845 & 45.28020
+\end{array}
+\end{bmatrix}
+\end{equation}
+%
+Vicon marker in \texttt{pelvis} frame:
+\begin{equation}
+P = \begin{bmatrix}
+\begin{array}{S[table-format=1.5]S[table-format=2.5]S[table-format=2.5]}
+0.1674 & 0 & -0.2015 \\
+0.1674 & 0 & -0.14053 \\
+0.1087 & -0.1194 & -0.0717 \\
+0.0837 & 0.1194 & -0.0717
+\end{array}
+\end{bmatrix}
+\end{equation}
+
+
+\subsection{Transformation}
+
+\begin{equation}
+T_{p \rightarrow m} = \begin{bmatrix}
+\begin{array}{S[table-format=2.5]S[table-format=1.5]S[table-format=2.5]S[table-format=2.5]}
+0.99610 & 0.02143 & 0.08560 & 0.13180 \\
+-0.02129 & 0.99977 & -0.00259 & -0.0 \\
+-0.08564 & 0.00075 & 0.99633 & -0.12136 \\
+0 & 0 & 0 & 1
+\end{array}
+\end{bmatrix}
+\end{equation}
+
+
+\section{Hand}
+
+\subsection{Marker Position}
+
+Vicon marker in marker frame:
+\begin{equation}
+m = 0.001 \cdot \begin{bmatrix}
+\begin{array}{S[table-format=2.5]S[table-format=3.5]S[table-format=3.5]}
+8.18111 & -46.51067 & -9.48950 \\
+2.60155 & -14.01778 & 14.08099 \\
+-5.18721 & 32.79453 & -37.71204 \\
+-5.59546 & 27.73392 & 33.12054
+\end{array}
+\end{bmatrix}
+\end{equation}
+%
+Vicon marker in \texttt{leftPalm} frame:
+\begin{equation}
+P = \begin{bmatrix}
+\begin{array}{S[table-format=2.5]S[table-format=1.5]S[table-format=2.5]}
+-0.0592 & 0.103172 & 0.02345 \\
+-0.0605 & 0.0629 & 0.02345 \\
+-0.06 & 0.054 & -0.046 \\
+-0.0605 & 0.0173 & 0.0143
+\end{array}
+\end{bmatrix}
+\end{equation}
+
+\subsection{Transformation}
+
+\begin{equation}
+T_{h \rightarrow m} = \begin{bmatrix}
+\begin{array}{S[table-format=2.5]S[table-format=2.5]S[table-format=2.5]S[table-format=2.5]}
+-0.98248 & -0.18444 & -0.02682 & -0.06005 \\
+0.16571 & -0.79859 & -0.57861 & 0.05934 \\
+0.08529 & -0.57291 & 0.81516 & 0.0038 \\
+0 & 0 & 0 & 1
+\end{array}
+\end{bmatrix}
+\end{equation}
+
