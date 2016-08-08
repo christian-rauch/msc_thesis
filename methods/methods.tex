@@ -184,4 +184,24 @@ T_{p \rightarrow h} &= \left( T_{w \rightarrow vp} \cdot T_{m \rightarrow p}^{-1
 Given the transformations of the Vicon markers ($T_{w \rightarrow vp}$ and $T_{w \rightarrow vh}$) at each time instance, and the rigid transformation between these markers and the robot frame ($T_{m \rightarrow p}$ and $T_{m \rightarrow h}$) we can recover the true pose of the hand in the pelvis frame ($T_{p \rightarrow h}$) using \cref{eqn:hand_pose_from_vicon}.
 
 
-\subsection{Joint Position Offsets}
+\subsection{Joint Position Offset Calibration}
+
+The availability of a true transformation within the robot kinematic chain enables us to compare the reported hand pose from forward kinematics with the true hand hand pose and further, calibrate the joints in the kinematic chain such that this deviation is minimized.
+
+For minimizing the joint position deviation and obtaining correction offsets, the same optimization approach as described in \cite{Fallon2015} is applied. That is, given a correction function that maps a reported joint position value to its corrected value: $f_{corr}: q_{rep,i} \mapsto q_{corr,i}$, and a mapping from this joint space configuration to the 	task space pose of the manipulator using forward kinematics $\phi: \mathbf{q} \mapsto \mathbf{p}$, with the pose $\mathbf{p} \in SE(3)$, the optimal correction parameters can be found by minimising
+\begin{equation}
+e = \frac{1}{N} \sum_{i=1}^N  \lVert \phi \left( f_{corr}(q_{rep,i}) \right) - \mathbf{p}_i \rVert_2
+\end{equation}
+for $N$ samples, respectively poses. The average error is selected over the summed error to have comparable costs between varying lengths of sample sequences.
+
+Two correction function $f_{corr}$ have been selected. The constant correction
+\begin{equation}
+f_{corr}(q_{rep}) = q_{offset} + q_{rep}
+\end{equation}
+assumes constant offset that is independent from the reported joint position value itself. Here, only one parameter per calibrated joint is to be optimized. A linear correction function
+\begin{equation}
+f_{corr}(q_{rep}) = q_{offset} + m_1 \cdot q_{rep}
+\end{equation}
+assumes an additional relation to the reported joint position value itself. In this case twice the parameters are optimised.
+
+To prevent overfitting of the optimized correction parameters on the data set, the optimization result must be applied to a dedicated test set that has not been used for optimization. This is especially the case for more complex correction functions.
