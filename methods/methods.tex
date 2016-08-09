@@ -2,6 +2,61 @@
 
 \section{Robotic Platform}
 
+The focus of this work is the application of tracking in humanoid robotic platforms, where the manipulator is observed in a camera frame which is part of the robot's kinematic chain.
+
+The applied robot platform the the humanoid robot Valkyrie which is developed by NASA (\cref{fig:valkyrie}). It is \SI{1.8}{\meter} high and weights about \SI{125}{\kilo\gram}. In totally, it is actuated by 58 joints: leg ($2 \times 6$), arms ($2 \times 7$), hands ($2 \times 13$), neck (3) and torso (3). Hence, the kinematic chain from the observation frame to the hand frame consists of 10 actuated joints.
+
+\begin{figure}
+\captionsetup{width=0.35\textwidth}
+\centering
+\includegraphics[height=8cm]{images/valkyrie/Valkyrie.jpg}
+\caption{Humanoid robot Valkyrie (Image credits: NASA)}
+\label{fig:valkyrie}
+\end{figure}
+
+The robot will use depth data as its main source of information for estimating the configuration of the manipulator and the object pose. The MultiSense SL stereo and LIDAR depth sensor (\cref{fig:multisense}), which is mounted inside the head of the robot, provides two source of depth image from (1) stereo matching at \SI{15}{\hertz}, and (2) a rotating LIDAR which generates a fill scan at \nicefrac{1}{6} \si{\hertz}. An optional structure from light sensor (\cref{fig:xtion_pro}), which can be mounted on top of the head, uses the known location of projected IR dots to estimate the depth at these locations. The stereo cameras have its IR filter removed to enhance stereo matching by providing distinct keypoints from the IR pattern. The LIDAR data is not applied for tracking because of its low update rate.
+
+\begin{figure}
+%\captionsetup{width=0.7\textwidth}
+\centering
+%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL_rotated.jpg} \label{fig:multisense}}
+\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL.jpg} \label{fig:multisense}}
+\subfloat[Asus Xtion PRO]{\includegraphics[width=0.5\textwidth]{images/valkyrie/xtion_pro_live.jpg} \label{fig:xtion_pro}}
+\caption{Depth perception systems (Image credits: (a) Carnegie Robotics, (b) Asus)}
+\label{fig:depth_sensors}
+\end{figure}
+
+The key properties of both depth sensors are compared in \cref{tab:depth_sensor_comparison}. These properties are used to back-project the disparity values into the 3D points.
+
+\begin{table}
+\captionsetup{width=0.7\textwidth}
+\centering
+\begin{tabular}{|c||c|c|}
+\hline
+ & \textit{MultiSense SL} & \textit{Asus Xtion PRO Live} \\
+\hline
+\hline
+depth range & \SI{0.4}{\meter} - \SI{10}{\meter} & \SI{0.8}{\meter} - \SI{3.5}{\meter} \\
+\hline
+FOV & \SI{80}{\degree} $\times$ \SI{45}{\degree} & \SI{58}{\degree} $\times$ \SI{45}{\degree} \\
+\hline
+resolution & $1024 \times 1024$ & $640 \times 480$ \\
+\hline
+FPS & \SI{15}{\hertz} & \SI{30}{\hertz} \\
+\hline
+%f & \SI{6.5}{\milli\meter} & • \\
+%\hline
+$f_x$, $f_y$ & \SI{556.183}{pxl} & \SI{528.014}{pxl} \\
+\hline
+$c_x$, $c_y$ & \SI{512}{pxl} & (\SI{320}{pxl}, \SI{267}{pxl}) \\
+\hline
+b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
+\hline
+\end{tabular}
+\caption{Comparison of depth sensors. FOV: field of view, FPS: frames per second, $f$: focal length, $c$: image centre, $b$: baseline}
+\label{tab:depth_sensor_comparison}
+\end{table}
+
 
 \section{Signed Distance Function}
 
