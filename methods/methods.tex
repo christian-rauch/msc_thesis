@@ -7,24 +7,45 @@ The focus of this work is the application of tracking in humanoid robotic platfo
 The applied robot platform the the humanoid robot Valkyrie which is developed by NASA (\cref{fig:valkyrie}). It is \SI{1.8}{\meter} high and weights about \SI{125}{\kilo\gram}. In totally, it is actuated by 58 joints: leg ($2 \times 6$), arms ($2 \times 7$), hands ($2 \times 13$), neck (3) and torso (3). Hence, the kinematic chain from the observation frame to the hand frame consists of 10 actuated joints.
 
 \begin{figure}
-\captionsetup{width=0.35\textwidth}
+%\centering
+\begin{minipage}{0.5\textwidth}
 \centering
-\includegraphics[height=8cm]{images/valkyrie/Valkyrie.jpg}
+\includegraphics[width=0.6\textwidth]{images/valkyrie/Valkyrie.jpg}
 \caption{Humanoid robot Valkyrie (Image credits: NASA)}
 \label{fig:valkyrie}
+\end{minipage}
+%
+\hspace{0.5cm}
+%
+\begin{minipage}{0.5\textwidth}
+\centering
+\subfloat[MultiSense SL]{\includegraphics[width=0.8\textwidth]{images/valkyrie/MultiSense_SL.jpg} \label{fig:multisense}}
+
+\subfloat[Asus Xtion PRO]{\includegraphics[width=0.8\textwidth]{images/valkyrie/xtion_pro_live.jpg} \label{fig:xtion_pro}}
+\caption{Depth perception systems (Image credits: (a) Carnegie Robotics, (b) Asus)}
+\label{fig:depth_sensors}
+\end{minipage}
 \end{figure}
+
+%\begin{figure}
+%\captionsetup{width=0.35\textwidth}
+%\centering
+%\includegraphics[height=8cm]{images/valkyrie/Valkyrie.jpg}
+%\caption{Humanoid robot Valkyrie (Image credits: NASA)}
+%\label{fig:valkyrie}
+%\end{figure}
 
 The robot will use depth data as its main source of information for estimating the configuration of the manipulator and the object pose. The MultiSense SL stereo and LIDAR depth sensor (\cref{fig:multisense}), which is mounted inside the head of the robot, provides two source of depth image from (1) stereo matching at \SI{15}{\hertz}, and (2) a rotating LIDAR which generates a fill scan at \nicefrac{1}{6} \si{\hertz}. An optional structure from light sensor (\cref{fig:xtion_pro}), which can be mounted on top of the head, uses the known location of projected IR dots to estimate the depth at these locations. The stereo cameras have its IR filter removed to enhance stereo matching by providing distinct keypoints from the IR pattern. The LIDAR data is not applied for tracking because of its low update rate.
 
-\begin{figure}
-%\captionsetup{width=0.7\textwidth}
-\centering
-%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL_rotated.jpg} \label{fig:multisense}}
-\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL.jpg} \label{fig:multisense}}
-\subfloat[Asus Xtion PRO]{\includegraphics[width=0.5\textwidth]{images/valkyrie/xtion_pro_live.jpg} \label{fig:xtion_pro}}
-\caption{Depth perception systems (Image credits: (a) Carnegie Robotics, (b) Asus)}
-\label{fig:depth_sensors}
-\end{figure}
+%\begin{figure}
+%%\captionsetup{width=0.7\textwidth}
+%\centering
+%%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL_rotated.jpg} \label{fig:multisense}}
+%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL.jpg} \label{fig:multisense}}
+%\subfloat[Asus Xtion PRO]{\includegraphics[width=0.5\textwidth]{images/valkyrie/xtion_pro_live.jpg} \label{fig:xtion_pro}}
+%\caption{Depth perception systems (Image credits: (a) Carnegie Robotics, (b) Asus)}
+%\label{fig:depth_sensors}
+%\end{figure}
 
 The key properties of both depth sensors are compared in \cref{tab:depth_sensor_comparison}. These properties are used to back-project the disparity values into the 3D points.
 
@@ -58,8 +79,27 @@ b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
 \end{table}
 
 
+\section{Robot Model Representation}
+
+Part of this thesis is the adaptation of the reference implementation to robot model representations stored in URDF (Unified Robot Description Format) format. URDF defines at least a tree structure that resembles the kinematic tree of a robot with its joints and links. In addition, it can provide among other things information about joint limits and the geometric properties of the links.
+
+
 \section{Signed Distance Function}
 
+The descriptions in this section of the thesis are based on work by Schmidt et al. \cite{Schmidt2015} that presents the DART algorithm.
+
+The signed distance function (SDF) gives the shortest distance of a point in the observed point cloud to the robot model. It is signed in the sense that the distance is positive if the point lies outside the model, it is negative if the point is inside the model, and it is zero if the point lies exactly on the surface of the model. DART uses two kind of SDFs: the model SDF and the observation SDF.
+
+The model SDF (\cref{fig:model_SDF}) gives the shortest distance of a point to a rigid model mesh. For articulated models, which consist of multiple such model meshes, a local model SDF is applied. This way, the complex computation of a global model SDF for each articulation can be broken down to the parallel computation of local SDF per robot part. For each point in the point cloud data, the distance to each robot part, respectively frame, is computed using the precomputed local SDFs. The point is then associated to the robot frame with the smallest absolute distance value.
+
+In addition to considering observed data and the robot model, which is defined as \textit{positive information} in DART, the optimization is also using \textit{negative information}. If a point is observed in 3D, there cannot be anything in between this point and the camera centre. This free space constrain is visualised in \cref{fig:observation_SDF}. This observation SDF uses the distance transform on the observation and the estimated configuration of the model from the model SDF to constrain models to not be in free space.
+
+\begin{figure}
+\centering
+\subfloat[Model SDF]{\includegraphics[width=0.5\textwidth]{images/sdf/local_sdf.pdf} \label{fig:model_SDF}}
+\subfloat[Observation SDF]{\includegraphics[width=0.3\textwidth]{images/sdf/sdf_obs.pdf} \label{fig:observation_SDF}}
+\caption{Local model SDF and observation SDF (Inspired by \cite{Schmidt2015} figures 3 and 6). (a) the observed point is assigned to \emph{part 2}, (b) the estimated box (light gray) lies in between the observation and the image centre and thus invalidates the free space constrain.}
+\end{figure}
 
 \section{Gauss-Newton Algorithm}
 
