@@ -57,7 +57,7 @@ $c_x$, $c_y$ & \SI{512}{pxl} & (\SI{320}{pxl}, \SI{267}{pxl}) \\
 b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
 \hline
 \end{tabular}
-\caption{Comparison of depth sensors. FOV: field of view, FPS: frames per second, $f$: focal length, $c$: image centre, $b$: baseline}
+\caption[Comparison of depth sensors]{Comparison of depth sensors. FOV: field of view, FPS: frames per second, $f$: focal length, $c$: image centre, $b$: baseline}
 \label{tab:depth_sensor_comparison}
 \end{table}
 
@@ -90,7 +90,7 @@ In addition to considering observed data and the robot model, which is defined a
 \centering
 \subfloat[Model SDF]{\includegraphics[width=0.5\textwidth]{images/sdf/local_sdf.pdf} \label{fig:model_SDF}}
 \subfloat[Observation SDF]{\includegraphics[width=0.3\textwidth]{images/sdf/sdf_obs.pdf} \label{fig:observation_SDF}}
-\caption{Local model SDF and observation SDF (Inspired by \cite{Schmidt2015} figures 3 and 6). (a) the observed point is assigned to \emph{part 2}, (b) the estimated box (light gray) lies in between the observation and the image centre and thus invalidates the free space constrain.}
+\caption[Signed Distance Function]{Local model SDF and observation SDF (Inspired by \cite{Schmidt2015} figures 3 and 6). (a) the observed point is assigned to \emph{part 2}, (b) the estimated box (light gray) lies in between the observation and the image centre and thus invalidates the free space constrain.}
 \end{figure}
 
 \section{Gauss-Newton Algorithm}
@@ -227,7 +227,7 @@ To obtain the true transformation from the pelvis frame to the left hand palm fr
 \captionsetup{width=0.4\textwidth}
 \centering
 \includegraphics[width=0.4\textwidth]{images/vicon_pose/vicon_marker_col.jpg}
-\caption{Location of Vicon marker on pelvis (green) and left hand (red)}
+\caption[Location of Vicon marker]{Location of Vicon marker on pelvis (green) and left hand (red)}
 \label{fig:vicon_marker}
 \end{figure}
 
@@ -243,7 +243,7 @@ To obtain the transformation $T_{p \rightarrow h}$, which gives the hand pose in
 \captionsetup{width=0.52\textwidth}
 \centering
 \includegraphics[width=0.5\textwidth]{images/vicon_pose/vicon_transforms.pdf}
-\caption{Transformations between Vicon markers (\textit{pelvis} - green, \textit{hand} - red) and robot frames}
+\caption[Transformations of Vicon markers]{Transformations between Vicon markers (\textit{pelvis} - green, \textit{hand} - red) and robot frames}
 \label{fig:transform_vicon_robot}
 \end{figure}
 
