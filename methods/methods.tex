@@ -4,6 +4,8 @@
 
 The focus of this work is the application of tracking in humanoid robotic platforms, where the manipulator is observed in a camera frame which is part of the robot's kinematic chain.
 
+\subsection{Hardware}
+
 The applied robot platform the the humanoid robot Valkyrie which is developed by NASA (\cref{fig:valkyrie}). It is \SI{1.8}{\meter} high and weights about \SI{125}{\kilo\gram}. In totally, it is actuated by 58 joints: leg ($2 \times 6$), arms ($2 \times 7$), hands ($2 \times 13$), neck (3) and torso (3). Hence, the kinematic chain from the observation frame to the hand frame consists of 10 actuated joints.
 
 \begin{figure}
@@ -27,26 +29,7 @@ The applied robot platform the the humanoid robot Valkyrie which is developed by
 \end{minipage}
 \end{figure}
 
-%\begin{figure}
-%\captionsetup{width=0.35\textwidth}
-%\centering
-%\includegraphics[height=8cm]{images/valkyrie/Valkyrie.jpg}
-%\caption{Humanoid robot Valkyrie (Image credits: NASA)}
-%\label{fig:valkyrie}
-%\end{figure}
-
 The robot will use depth data as its main source of information for estimating the configuration of the manipulator and the object pose. The MultiSense SL stereo and LIDAR depth sensor (\cref{fig:multisense}), which is mounted inside the head of the robot, provides two source of depth image from (1) stereo matching at \SI{15}{\hertz}, and (2) a rotating LIDAR which generates a fill scan at \nicefrac{1}{6} \si{\hertz}. An optional structure from light sensor (\cref{fig:xtion_pro}), which can be mounted on top of the head, uses the known location of projected IR dots to estimate the depth at these locations. The stereo cameras have its IR filter removed to enhance stereo matching by providing distinct keypoints from the IR pattern. The LIDAR data is not applied for tracking because of its low update rate.
-
-%\begin{figure}
-%%\captionsetup{width=0.7\textwidth}
-%\centering
-%%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL_rotated.jpg} \label{fig:multisense}}
-%\subfloat[MultiSense SL]{\includegraphics[height=4cm]{images/valkyrie/MultiSense_SL.jpg} \label{fig:multisense}}
-%\subfloat[Asus Xtion PRO]{\includegraphics[width=0.5\textwidth]{images/valkyrie/xtion_pro_live.jpg} \label{fig:xtion_pro}}
-%\caption{Depth perception systems (Image credits: (a) Carnegie Robotics, (b) Asus)}
-%\label{fig:depth_sensors}
-%\end{figure}
-
 The key properties of both depth sensors are compared in \cref{tab:depth_sensor_comparison}. These properties are used to back-project the disparity values into the 3D points.
 
 \begin{table}
@@ -79,9 +62,18 @@ b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
 \end{table}
 
 
-\section{Robot Model Representation}
+\subsection{Robot Model Representation}
 
-Part of this thesis is the adaptation of the reference implementation to robot model representations stored in URDF (Unified Robot Description Format) format. URDF defines at least a tree structure that resembles the kinematic tree of a robot with its joints and links. In addition, it can provide among other things information about joint limits and the geometric properties of the links.
+Part of this thesis is the adaptation of the reference implementation to robot model representations stored in the URDF (Unified Robot Description Format) format. URDF defines at a minimum a tree structure that resembles the kinematic tree of a robot with its joints and links. In addition it can provide, among other things, information about joint limits and the geometric properties of the links. These geometric properties can be defined as primitive shapes like spheres, boxes or cylinders, or alternatively refer to complexer triangle meshes.
+
+The URDF plugin for DART is designed that way, that all parts of the kinematic chain that are connected to a given root frame are tracked. This enables us to neglect robot parts that are not involved in manipulation. \cref{fig:val_model_dart} shows such a model that is loaded from the \texttt{torso} frame upwards in the kinematic tree. Hence, it includes both arms, hands and the head with the sensors. This enables us to track both hands in a bi-manual grasping task with respect to the camera frame without invalidating kinematic constraints, such as overrunning joint limits or disconnecting links.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{images/valkyrie/val_model_torso_dart.png}
+\caption{Robot model loaded in DART}
+\label{fig:val_model_dart}
+\end{figure}
 
 
 \section{Signed Distance Function}
