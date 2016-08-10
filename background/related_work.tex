@@ -1,11 +1,14 @@
 \chapter{Related Work}
 
-This chapter is completely adopted from a previous literature review and research proposal on the same topic.
+This chapter is based on a previous literature review and research proposal that leaded towards this thesis. It has been extended by recent publications and a clarification where this work contributes to the current state of the art.
+
 
 \section{Sensor Modalities}
 
 \subsection{2D Vision}
-Most earlier work in this area has been limited to single 2D perception capabilities. Thus, a common approach was to project known 3D objects into 2D and to compare these with perceived data from images. Chliveros et al. \cite{Chliveros2013}, Teuli\`ere et al. \cite{Teuliere2010}, Choi et al. \cite{Choi2012} and Azad et al. \cite{Azad2011} rely on an exact 3D model of an object for tracking and use a particle filter to maintain multiple hypotheses of the object's pose. These hypotheses are projected into a 2D plane (prediction step) and evaluated at the observation step. At this observation stage, the predicted edges of the 3D model in the 2D plane are compared with the linear edges and shapes extracted from the actual 2D sensor data. As a positive aspect, these approaches do not require range sensors but they do require detailed knowledge of the object's dimensions beforehand and do not exploit features from colour or texture, excluding Choi et al. which uses SIFT keypoints as initial pose estimation.
+Early work in this area has been limited to single 2D perception capabilities. Thus, a common approach was to project known 3D objects into 2D and to compare these with perceived data from images. Chliveros et al. \cite{Chliveros2013}, Teuli\`ere et al. \cite{Teuliere2010}, Choi et al. \cite{Choi2012} and Azad et al. \cite{Azad2011} rely on an exact 3D model of an object for tracking and use a particle filter to maintain multiple hypotheses of the object's pose. These hypotheses are projected into a 2D plane (prediction step) and evaluated at the observation step. At this observation stage, the predicted edges of the 3D model in the 2D plane are compared with the linear edges and shapes extracted from the actual 2D sensor data. As a positive aspect, these approaches do not require range sensors but they do require detailed knowledge of the object's dimensions beforehand and do not exploit features from colour or texture, excluding Choi et al. which uses SIFT keypoints as initial pose estimation.
+
+Recent template matching approaches explore special properties of boundary edges. Mu\~nos et al. \cite{Munoz2016} for example use HOG (histograms of oriented gradients) to find corresponding edges between the template and the image. Cao et al. \cite{Cao2016} on the other side argue that HOG features lose pixel-level detail and instead use the cross-correlation between the Laplacian of Gaussian between template and image patch. All template matching approaches have in common that they require a large data base with templates of objects in all expected views.
 
 \subsection{3D Vision}
 \label{sec:3d_vision}
@@ -29,7 +32,7 @@ The multi-object tracking in SimTrack is extended for articulated objects \cite{
 
 SimTrack is further extended for joint object and manipulator tracking \cite{Pauwels2014b}, where the manipulator (arm and hand) is considered rigid after the joint values are used to articulate the model. As the approach relies on inaccurate joint encoder values, only the hand (which is assumed to be rigidly connected to the object) is tracked. Further, because the robot's surface is low textured, sparse features cannot be exploited.
 
-The DART framework presented by Schmidt et al. \cite{Schmidt2015}, \cite{Schmidt2015b} aims at providing a general framework for articulated tracking using depth sensors. DART assumes that the articulated model is given as a set of rigid objects with transformation from the kinematic chain and a local signed distance function that gives the distance of a point to the hull of the object (and is negative inside). For a given depth image, the global sum of distances from all the local signed distance function are minimized to find the underlying joint values. This maximizes the likelihood that the observed depth data matches the configuration of the articulated signed distance function. Compared to particle filters, this does not maintain explicit hypotheses but optimizes on the distances.
+The DART framework presented by Schmidt et al. \cite{Schmidt2015, Schmidt2015b} aims at providing a general framework for articulated tracking using depth sensors. DART assumes that the articulated model is given as a set of rigid objects with transformation from the kinematic chain and a local signed distance function that gives the distance of a point to the hull of the object (and is negative inside). For a given depth image, the global sum of distances from all the local signed distance function are minimized to find the underlying joint values. This maximizes the likelihood that the observed depth data matches the configuration of the articulated signed distance function. Compared to particle filters, this does not maintain explicit hypotheses but optimizes on the distances.
 
 \subsection{Contact Sensors}
 
@@ -43,7 +46,7 @@ As this approach does not scale from 3 DOF (2D position + 1D rotation) to 6DOF p
 The work of Schmidt et al. in \cite{Schmidt2015} is extended in \cite{Schmidt2015b} to incorporate physical constraints, namely intersection of the manipulator with the object and contact with the object.
 If the manipulated object is rigidly connected to a manipulator, the joint encoder values can be an important source to improve the object's pose estimate.
 
-On the other hand, kinematic chains can be used to constrain estimated configurations to physically reasonable and likely values and eliminate unlikely hypotheses \cite{Shotton2013,Sharp2015}.
+On the other hand, kinematic chains can be used to constrain estimated configurations to physically reasonable and likely values and eliminate unlikely hypotheses \cite{Shotton2013, Sharp2015}.
 Whereas physical constraints are fixed, e.g. they always hold, kinematic constraints are soft, e.g. unlikely and unreasonable states might still occur.
 
 \section{Real-Time Capabilities}
@@ -52,19 +55,20 @@ All of the particle filtering based approaches trade off the quality of the resu
 
 Krull et al. \cite{Krull2015} however showed, that using a good proposal distribution can reduce the required amount of particles to achieve similar results compared to particle filters using generic distributions with many more particles. Choi et al. \cite{Choi2013} presented an alternative solution to this dilemma. By developing algorithms with parallelisation in mind, independent tasks like updating the state of samples, a particle filter can efficiently use general purpose computing on modern GPUs.
 
-In general, most of the approaches that achieve real-time performance exploit computing on GPUs to parallelise their algorithms.
+%In general, most of the approaches that achieve real-time performance exploit computing on GPUs to parallelise their algorithms.
 
 \section{Model-based and Model-free}
 
 Tracking of rigid or articulated objects usually requires knowledge of the dimensions of the object or the manipulator beforehand. In contrast, there exist approaches that model manipulated objects and kinematic chains online during manipulation.
 
 Krainin et al. \cite{Krainin2011} modelled objects online by tracking the manipulator and the object at the same time.
-They address the issue of relying solely on either the object's appearance or the manipulator's joint values. The lack of visual features causes ambiguous pose estimates for symmetric and textureless objects on one side. On the other side, noisy encoder values cause inaccurate pose estimates.
-Hence, by using multiple sources of information they are able to map highly symmetric 3D objects with lack of visual features and in presence of noisy joint values.
+They address the issue of relying solely on either the object's appearance or the manipulator's joint values. On one side, the lack of visual features causes ambiguous pose estimates for symmetric and textureless objects. On the other side, noisy encoder values cause inaccurate pose estimates.
+Thus, by using multiple sources of information they are able to map highly symmetric 3D objects with lack of visual features and in presence of noisy joint values.
 
 The issue of faulty or absent of joint encoder values is addressed by Sturm et al. \cite{Sturm2009}. In their work, the kinematic chain of an arm is learned from scratch and enables adaptation in cases of malfunction, e.g. if a joint is blocked or its strength decreases over time.
-
 Si et al. \cite{Si2013} learn the variety of appearance of articulated objects as a hierarchical composition of parts as AND and OR nodes without providing labels. AND nodes define connection of parts, e.g. torso and limbs, and OR nodes represent different configurations of the same part. As a result, they can provide generic configurable templates for articulated objects.
+
+On the other side, the availability of accurate CAD models of robots and large online databases of 3D objects \cite{Firman2016, Singh2014} reduces the need to create models of common objects.
 
 \section{Features}
 Discriminative approaches, that learn the appearance of parts \cite{Shotton2013, Krull2015, Pauwels2015} or complete poses \cite{Sharp2015}, rely on manually designed features or keypoints like edges, SIFT \cite{Pauwels2015, Morwald2010} or depth features. In the RGB-D domain, where these features often neglect one of the channels, exploiting all the information is beneficial. Ren et al. \cite{Ren2012} applied kernel descriptor for RGB-D scene labelling and showed superior performance of RGB-D descriptors compared to RGB or depth only descriptors.
@@ -89,10 +93,15 @@ The spatial relation of compound parts is also exploited by Jiu et al. \cite{Jiu
 \label{sec:discussion}
 
 The majority of the presented work in the field of articulated tracking applies a discriminative approach to depth sensor data. Because of the high variance in shape and viewpoint of the tracked objects, a very large amount of training data is required to learn a sufficient distribution of articulations. If the articulated objects are known beforehand and a large variety of sensor data is available or can be generated, this is a promising approach.
-However, to advance in the application of humanoid robots and to enable more generic manipulation, more adaptive pose estimation approaches are needed that do not require extensive prior knowledge of the manipulated object.
+%However, to advance in the application of humanoid robots and to enable more generic manipulation, more adaptive pose estimation approaches are needed that do not require extensive prior knowledge of the manipulated object.
 
-Additionally, relying solely on either the learned representation of objects or the kinematics of the manipulator fails in cases of low structured objects (highly symmetric, lack of texture and visual features), non-reliable sensor data (occlusions, reflection of sunlight, shadows in depth data, non-IR-reflective surfaces) and wrong, noisy or indirect joint encoder values. For the latter case, tendon driven or elastic manipulators might not have a direct relation of controlled and observed state.
+Additionally, relying solely on either the learned representation of objects or the kinematics of the manipulator fails in cases of low structured objects (highly symmetric, lack of texture and visual features), non-reliable sensor data (occlusions, reflection of sunlight, shadows in depth data, non-IR-reflective surfaces) and noisy or improper calibrated joint encoders.
+%For the latter case, tendon driven or elastic manipulators might not have a direct relation of controlled and observed state.
 
-Tracking and pose estimation of multiple objects is only considered in a small fraction of the presented work. Most of the presented work focuses either on the tracking of rigid objects or the tracking of manipulators; or assumes no interaction of tracked objects. By assuming no interaction between objects and no spatial or hierarchical relation, similar parts like fingers are hard to discriminate from each other.
+Tracking and pose estimation of multiple objects is only considered in a small fraction of the presented work. Most of the presented work focuses either on the tracking of rigid objects or the tracking of manipulators; or assumes no interaction of tracked objects.
+%By assuming no interaction between objects and no spatial or hierarchical relation, similar parts like fingers are hard to discriminate from each other.
 
-Although the majority of work uses information from different sources, mainly predefined objects, depth observation and forward kinematics, there exist more constraints and sensor information that can be fused together.
+%Although the majority of work uses information from different sources, mainly predefined objects, depth observation and forward kinematics, there exist more constraints and sensor information that can be fused together.
+
+This work is settled in the domain of combined manipulator and object tracking, using the gradient based optimization approach on depth data that is presented by Schmidt et al. \cite{Schmidt2015}.
+By specifically applying this approach in a robotic manipulation setting, this work contributes towards the optimal integration of visual observation (external perception) and joint sensing (internal perception).
