@@ -76,7 +76,7 @@ During the movement, depth data is collected simultaneously from the MultiSense 
 \subsection{Results}
 \label{sec:prior_results}
 
-The error in joint and task space is computed as L2 norm (Euclidean distance) of its components and plotted over time. In joint space these components are the left fingers (13 DoF: 3 \emph{leftIndexFingerPitch}, 3 \emph{leftMiddleFingerPitch}, 3 \emph{leftPinkyPitch}, 3 \emph{leftThumbPitch} and 1 \emph{leftThumbRoll}) and the left arm (7 DoF: \emph{leftShoulderPitch/Roll/Yaw}, \emph{leftElbowPitch}, \emph{leftForearmYaw}, \emph{leftWristRoll/Pitch}). In task space, the 3D position ($x,y,z$) and the 3D orientation (\textit{roll}, \textit{pitch}, \textit{yaw}) of the left hand (frame: \emph{leftPalm}) are computed via FK on the reported and estimated robot configuration.
+The error in joint and task space is computed as L2 norm (Euclidean distance) of its components and plotted over time. In joint space these components are the left fingers (13 DoF: 3 \emph{leftIndexFingerPitch}, 3 \emph{leftMiddleFingerPitch}, 3 \emph{leftPinkyPitch}, 3 \emph{leftThumbPitch} and 1 \emph{leftThumbRoll}) and the left arm (7 DoF: \emph{leftShoulderPitch/Roll/Yaw}, \emph{leftElbowPitch}, \emph{leftForearmYaw}, \emph{leftWristRoll/Pitch}). In task space, the 3D position ($x,y,z$) and the 3D orientation (\textit{roll}, \textit{pitch}, \textit{yaw}) of the left hand (frame: \emph{leftPalm}) are computed via forward kinematics on the reported and estimated robot configuration.
 
 \subsubsection{Common Weight}
 
@@ -84,11 +84,18 @@ The plots compare the joint and task space errors for the two depth sources for 
 
 \paragraph{Stereo}
 
-\Cref{fig:stereo_joint_error} compares the joint error for left fingers and arm. For both parts, after the optimization reaches the steady state, the maximum error is reached when no prior information from the reported configuration is used.
-The general trend is that the error decreases with increasing weight. This is not true for the arm movement in the second half of phase 4 ($t=[20,30]$), where weights of $0.2$ and $0.5$ result in larger errors than using no prior.
+\Cref{fig:stereo_joint_error} compares the joint error for left fingers and arm. For both parts, after the optimization reaches the steady state, the maximum error is reached when no prior information from the reported configuration is used. In this case, the configuration is solely optimized using the distance to the observed point cloud. If the manipulator is close to a large concentration of points, it will get dragged into it (\cref{fig:no_prior_fingers_table}).
+The general trend is that the error decreases with increasing prior weight. This is not true for the arm movement in the second half of phase 4 ($t=[20,30]$), where weights of $0.2$ and $0.5$ result in larger errors than using no prior.
 
 The largest decrease in error can be seen for the finger joints when using already a small weight of $0.2$. A similar effect is not present for the arm joints. This is presumably because the robot can only observe the lower part of its arm and hence the arm configuration is mostly determined by its initial state close to the reported state.
 
+\begin{figure}
+\captionsetup{width=0.5\textwidth}
+\centering
+\includegraphics[width=0.5\textwidth]{images/eval_prior/fingers_in_table.png}
+\caption{Fingers get dragged into nearby concentration of points when solely using the signed distance function as objective}
+\label{fig:no_prior_fingers_table}
+\end{figure}
 
 \begin{figure}
 \centering
