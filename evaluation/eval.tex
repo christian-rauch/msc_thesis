@@ -31,7 +31,7 @@ Especially the movement phases 2 and 4, respectively movements starting in state
 \begin{minipage}{0.45\textwidth}
 \centering
 \includegraphics[width=1.0\textwidth]{images/eval_prior/sequence/prior_setting.png} 
-\caption{Setup}
+\caption{Joint prior setup}
 \label{fig:prior_setting}
 \end{minipage}
 %
@@ -93,7 +93,7 @@ The largest decrease in error can be seen for the finger joints when using alrea
 \captionsetup{width=0.5\textwidth}
 \centering
 \includegraphics[width=0.5\textwidth]{images/eval_prior/fingers_in_table.png}
-\caption{Fingers get dragged into nearby concentration of points when solely using the signed distance function as objective}
+\caption[Wrong association of data points]{Association of unrelated points to the robot hand. Fingers get dragged into nearby concentration of points when solely using the signed distance function as objective}
 \label{fig:no_prior_fingers_table}
 \end{figure}
 
@@ -102,7 +102,7 @@ The largest decrease in error can be seen for the finger joints when using alrea
 \subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_finger_joint_error.pdf} \label{fig:stereo_joint_error_hand} }
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_arm_joint_error.pdf} \label{fig:stereo_joint_error_arm} }
-\caption{Stereo, joint space error for left finger and arm joints}
+\caption[]{Stereo, joint space error for left finger and arm joints}
 \label{fig:stereo_joint_error}
 \end{figure}
 
@@ -365,7 +365,7 @@ The error plots in \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movemen
 \subfloat[position error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error_nop.pdf} }
 \subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_ori_error_nop.pdf} }
 
-\caption{Arm movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
+\caption[Arm movement, hand pose error]{Arm movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
 \label{fig:vic_error_arm_movement}
 \end{figure}
 
@@ -381,7 +381,7 @@ From both data sets it can be noticed that the estimated pose is closer to the V
 \subfloat[position error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_pos_error_nop.pdf} }
 \subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_finger_ori_error_nop.pdf} }
 
-\caption{Finger movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
+\caption[Finger movement, hand pose error]{Finger movement, Hand pose error of reported and estimated robot state compared to Vicon hand marker pose.}
 \label{fig:vic_error_finger_movement}
 \end{figure}
 
@@ -420,7 +420,7 @@ The correlation between the averaged \textit{dart} offsets and \textit{vicon} of
 \subfloat[Arm movement]{\includegraphics[width=0.5\textwidth]{images/offset/dart_arm_offset.pdf} }
 \subfloat[Finger movement]{\includegraphics[width=0.5\textwidth]{images/offset/dart_finger_offset.pdf} }
 
-\caption{Estimated offsets of reported joint configuration to estimated configuration}
+\caption[Estimated offsets]{Estimated offsets of reported joint configuration to estimated configuration}
 \label{fig:estimated_offsets}
 \end{figure}
 
@@ -505,7 +505,7 @@ After applying the constant offsets optimized on the entire data set to the repo
 \subfloat[Finger movement, hand position]{\includegraphics[width=0.5\textwidth]{images/offset/corr_finger_rep_hand_pos_error.pdf} }
 \subfloat[Finger movement, hand orientation]{\includegraphics[width=0.5\textwidth]{images/offset/corr_finger_rep_hand_ori_error.pdf} }
 
-\caption{Reported hand pose error after applying joint position offsets. Top row: arm movement data set, Bottom row: finger movement data set.}
+\caption[Hand pose error after offsets]{Reported hand pose error after applying joint position offsets. Top row: arm movement data set, Bottom row: finger movement data set.}
 \label{fig:corrected_hand_pose}
 \end{figure}
 
