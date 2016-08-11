@@ -1,4 +1,5 @@
 \chapter{Conclusion}
+\label{sec:conclusion}
 
 \section{Discussion}
 
@@ -16,7 +17,7 @@ The comparison of two depth sources for object tracking demonstrated, that estim
 
 \section{Future Work}
 
-\subsection{Manipulator tracking}
+\subsection{Manipulator Tracking}
 
 Using the prior information is a step towards more reliable manipulation tracking. But we can only take full advantage of this, if the sensed joint state is as accurate as it can get. We further showed that selecting appropriate weights is not a straightforward task.
 
@@ -34,6 +35,6 @@ Different weighting schemes and weights have been evaluated. Given the ground tr
 So far, only the Gauss-Newton method has been used for solving the non-linear least-squares problem. Like all gradient based methods, this optimization method faces the before mentioned problem of local minima. Alternative, global optimization approaches like particle swarm optimization or simulated annealing should be investigated. Global optimization methods consider multiple solutions to the optimization problem spread over the whole parameter space. Hence, they don't suffer from locally bounded information.
 
 
-\subsection{Object tracking}
+\subsection{Object Tracking}
 
 Object tracking cannot benefit from prior information provided by the robot and thus suffered most by distracting or missing raw sensor readings. We propose to use depth specific features that have been successfully applied to this task instead of using probably noisy or incomplete raw data. Similarly, the learned combination of primitive depth features can also provide the solution to this problem. In general, the object tracking problem should be considered as a one-shot classification problem using discriminative methods instead of iterative convergence using gradient based methods.

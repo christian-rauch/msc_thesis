@@ -1,4 +1,5 @@
 \chapter{Methods}
+\label{sec:methods}
 
 \section{Robotic Platform}
 
@@ -66,7 +67,7 @@ b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
 
 Part of this thesis is the adaptation of the reference implementation to robot model representations stored in the URDF (Unified Robot Description Format) format. URDF defines at a minimum a tree structure that resembles the kinematic tree of a robot with its joints and links. In addition it can provide, among other things, information about joint limits and the geometric properties of the links. These geometric properties can be defined as primitive shapes like spheres, boxes or cylinders, or alternatively refer to complexer triangle meshes.
 
-The URDF plugin for DART is designed that way, that all parts of the kinematic chain that are connected to a given root frame are tracked. This enables us to neglect robot parts that are not involved in manipulation. \cref{fig:val_model_dart} shows such a model that is loaded from the \texttt{torso} frame upwards in the kinematic tree. Hence, it includes both arms, hands and the head with the sensors. This enables us to track both hands in a bi-manual grasping task with respect to the camera frame without invalidating kinematic constraints, such as overrunning joint limits or disconnecting links.
+The URDF plugin for DART is designed that way, that all parts of the kinematic chain that are connected to a given root frame are tracked. This enables us to neglect robot parts that are not involved in manipulation. \Cref{fig:val_model_dart} shows such a model that is loaded from the \texttt{torso} frame upwards in the kinematic tree. Hence, it includes both arms, hands and the head with the sensors. This enables us to track both hands in a bi-manual grasping task with respect to the camera frame without invalidating kinematic constraints, such as overrunning joint limits or disconnecting links.
 
 \begin{figure}
 \centering
