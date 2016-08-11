@@ -1,8 +1,6 @@
-%\documentclass[a4paper,12pt,times,numbered,print,index]{template/PhDThesisPSnPDF}
-\documentclass[a4paper,12pt,times,numbered,index]{template/PhDThesisPSnPDF}
+\documentclass[a4paper,12pt,times,numbered]{template/PhDThesisPSnPDF}
 
-% TODO, remove before submission
-\newcommand\todo[1]{\textcolor{red}{TODO: #1}}
+\hypersetup{colorlinks=false}
 
 \usepackage{subfig}
 
@@ -49,14 +47,11 @@
 \input{evaluation/eval.tex}
 \input{conclusion/conclusion.tex}
 
+% references
 \begin{spacing}{0.9}
-
 \cleardoublepage
-
 \bibliographystyle{ieeetr}
-
 \bibliography{articulated_tracking}
-
 \end{spacing}
 
 % Appendix
