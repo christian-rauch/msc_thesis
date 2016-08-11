@@ -272,13 +272,15 @@ e = \frac{1}{N} \sum_{i=1}^N  \lVert \phi \left( f_{corr}(q_{rep,i}) \right) - \
 for $N$ samples, respectively poses. The average error is selected over the summed error to have comparable costs between varying lengths of sample sequences.
 
 Two correction functions $f_{corr}$ have been selected. The constant correction
-\begin{equation}
-f_{corr}(q_{rep}) = q_{offset} + q_{rep}
-\end{equation}
+\begin{align}
+f_{corr}(q_{rep}) &= q_{offset} + q_{rep}
+\label{eqn:const_offset}
+\intertext{
 assumes a constant offset that is independent from the reported joint position value itself. Here, only one parameter per calibrated joint has to be optimized. A linear correction function
-\begin{equation}
-f_{corr}(q_{rep}) = q_{offset} + m_1 \cdot q_{rep}
-\end{equation}
+}
+f_{corr}(q_{rep}) &= q_{offset} + m_1 \cdot q_{rep}
+\label{eqn:linear_offset}
+\end{align}
 assumes an additional relation to the reported joint position value itself. In this case twice as much parameters need to be optimised.
 
 To prevent overfitting of the optimized correction parameters on the data set, the optimization result must be applied to a dedicated test set that has not been used for optimization. This is especially the case for more complex correction functions.
