@@ -5,36 +5,41 @@
 
 This thesis motivated research on articulated tracking for humanoid manipulation by introducing issues that make open-loop manipulation currently infeasible. One of the solutions towards closed-loop manipulation using visual feedback has been presented and investigated.
 
-The presented gradient based approach is generally applicable to articulated models and hence could be applied to both, manipulator and object tracking. The advantage of such approach is its simplicity: it only requires a model and raw depth data, and allows the straightforward extension of the objective function.
-It has been shown, however, that using the signed distance function alone results in local minima caused by depth readings from nearby objects such as tables.
+The presented gradient based approach is generally applicable to articulated models and hence has been applied to both, manipulator and object tracking. The advantage of this approach is its simplicity: it only requires a model and raw depth data, and allows the straightforward extension of the objective function.
+It has been shown, however, that using the signed distance function alone results in local minima caused by depth readings from nearby objects.
 
 Motivated by the application of manipulator tracking when the manipulator is connected by a kinematic chain to the camera frame, the main contribution of this work has been the justification and evaluation of incorporating prior information into the optimization.
 The experiments have shown that exploiting this information is beneficial for acquiring more accurate estimations of the manipulator pose.
 However, comparisons with the ground truth data also revealed that there is actually an offset between the reported and the true hand pose. In these circumstances, the application of prior and the choice of weight must be critically examined. A solution to this dilemma has been presented by optimizing joint position offsets using the true hand pose.
 
-The comparison of two depth sources for object tracking demonstrated, that estimating the pose of an object using depth data only is a much more difficult task since no prior information is available and the optimization thus depends on the distance function alone. Such an approach fails if the object is improper initialised and only sparse depth data is available.
+The comparison of two depth sources for object tracking demonstrated that estimating the pose of an object using depth data only is a much more difficult task since no prior information is available and the optimization thus depends on the distance function alone. Such an approach fails if the object is improper initialised and only sparse depth data is available.
 
 
 \section{Future Work}
 
 \subsection{Manipulator Tracking}
 
-Using the prior information is a step towards more reliable manipulation tracking. But we can only take full advantage of this, if the sensed joint state is as accurate as it can get. We further showed that selecting appropriate weights is not a straightforward task.
-
+Using the prior information is a step towards more reliable manipulator tracking. But we can only take full advantage of this, if the sensed joint state is as accurate as it can get. We further showed that selecting appropriate weights is not a straightforward task.
 For the robust and useful exploitation of joint position prior in the optimization, the following research questions have been identified.
 
+\vspace{-0.04cm}
+
 \paragraph{Calibration}
-The preliminary analysis of joint position offsets should be further investigated to provide valuable information for the true robot state. This should be done in a similar fashion as presented, in particular different complexity of correction functions need to be evaluated by cross validation on a larger data set containing a wide range of motions.
+The preliminary analysis of joint position offsets should be further investigated to provide valuable information of the true robot state. This should be done in a similar fashion as presented. In particular different complexity of correction functions need to be evaluated by cross validation on a larger data set containing a wide range of arm configurations.
 
 Additionally, the markers on the hand provide distinctive key points in the perceived depth data to align the camera frame with the then calibrated hand frame. This should further reduce discrepancies between manipulator and observation frame.
+
+\vspace{-0.04cm}
 
 \paragraph{Weights}
 Different weighting schemes and weights have been evaluated. Given the ground truth pose, choosing a weighting scheme and appropriate weights can be automatised by learning the optimal combination of objective functions.
 
+\vspace{-0.04cm}
+
 \paragraph{Optimization}
-So far, only the Gauss-Newton method has been used for solving the non-linear least-squares problem. Like all gradient based methods, this optimization method faces the before mentioned problem of local minima. Alternative, global optimization approaches like particle swarm optimization or simulated annealing should be investigated. Global optimization methods consider multiple solutions to the optimization problem spread over the whole parameter space. Hence, they don't suffer from locally bounded information.
+So far, only the Gauss-Newton method has been used for solving the non-linear least-squares problem. Like all gradient based methods, this optimization method faces the before mentioned problem of local minima. Alternative global optimization approaches like particle swarm optimization or simulated annealing should be investigated. Global optimization methods consider multiple solutions to the optimization problem spread over the whole parameter space. Hence, they do not suffer from locally bounded information.
 
 
 \subsection{Object Tracking}
 
-Object tracking cannot benefit from prior information provided by the robot and thus suffered most by distracting or missing raw sensor readings. We propose to use depth specific features that have been successfully applied to this task instead of using probably noisy or incomplete raw data. Similarly, the learned combination of primitive depth features can also provide the solution to this problem. In general, the object tracking problem should be considered as a one-shot classification problem using discriminative methods instead of iterative convergence using gradient based methods.
+Object tracking cannot benefit from prior information provided by the robot and thus suffered most by distracting or missing raw sensor readings. We propose to use depth specific features that have been successfully applied to this task instead of using probably noisy or incomplete raw data. Similarly, the learned combination of primitive depth features can also provide a solution to this problem. In general, the object tracking problem should be considered as a one-shot classification problem using discriminative methods instead of iterative convergence using gradient based methods.
