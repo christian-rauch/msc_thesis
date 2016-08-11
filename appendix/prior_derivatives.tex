@@ -4,15 +4,16 @@ This chapter contains the derivation of the joint prior used for the Jacobian in
 
 \section{Weighted L2 Norm of Deviation}
 
-\subsection{Objective Function}
 \begin{align}
-e &= w \cdot \lVert \mathbf{r} - \mathbf{q} \rVert \\
+\intertext{
+\subsection{Objective Function}}
+e &= w \cdot \lVert \mathbf{r} - \mathbf{q} \rVert_2 \\
 &= w \cdot \sqrt{\sum_{i=1}^N (r_i - q_i)^2}
-\end{align}
-
+%
+\intertext{
 \subsection{Partial Derivatives}
 For simplicity we substitute
-\begin{align}
+}
 \mathbf{d} &= \mathbf{r} - \mathbf{q} \\
 e &= w \cdot \sqrt{\mathbf{ss}} \\
 ss &= \sum_{i=1}^N d_i^2 .
@@ -25,48 +26,23 @@ Derivation by chain rule:
 \frac{\partial e}{\partial d_i} &= \frac{\partial ss}{\partial d_i} \cdot \frac{\partial e}{\partial ss} \nonumber\\
 \frac{\partial ss}{\partial d_i} &= 2d_i \nonumber\\
 \frac{\partial e}{\partial d_i} &= w + \frac{1}{2} ss^{-\frac{1}{2}} 2 d = -\frac{w \cdot d_i}{\sqrt{\sum_{i=1}^N}d_i^2} \nonumber\\
-\frac{\partial e}{\partial q_i} &= -w \frac{r_i - q_i}{\lVert \mathbf{r} - \mathbf{q} \rVert}
-\end{align}
-
-
-\section{L2 Norm of Weighted Deviation}
-
-\subsection{Objective Function}
-\begin{align}
-e &= \lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert \\
-&= \sqrt{\sum_{i=1}^N w \cdot (r_i - q_i)^2}
-\end{align}
-
-\subsection{Partial Derivatives}
-For simplicity we substitute
-\begin{align}
-\mathbf{d} &= \mathbf{r} - \mathbf{q} \\
-e &= \sqrt{\mathbf{ss}} \\
-ss &= \sum_{i=1}^N (w \cdot d_i)^2 .
-\end{align}
-%
-Derivation by chain rule:
-\begin{align}
-\frac{\partial e}{\partial q_i} &= \frac{\partial d_i}{\partial q_i} \cdot \frac{\partial e}{\partial d_i} \\
-\frac{\partial d_i}{\partial q_i} &= -1 \nonumber\\
-\frac{\partial e}{\partial d_i} &= \frac{\partial ss}{\partial d_i} \cdot \frac{\partial e}{\partial ss} \nonumber\\
-\frac{\partial ss}{\partial d_i} &= 2 w^2 d_i \nonumber\\
-\frac{\partial e}{\partial d_i} &= \frac{w^2 d_i}{\sqrt{ss}} \nonumber\\
-\frac{\partial e}{\partial q_i} &= -w^2 \frac{r_i - q_i}{\lVert w \cdot (\mathbf{r} - \mathbf{q}) \rVert}
+\frac{\partial e}{\partial q_i} &= -w \frac{r_i - q_i}{\lVert \mathbf{r} - \mathbf{q} \rVert_2}
 \end{align}
 
 
 \section{Individually Weighted Deviations}
 
-\subsection{Objective Function}
 \begin{align}
+\intertext{
+\subsection{Objective Function}
+}
 e &= \lvert \mathbf{r} - \mathbf{q} \rvert^\top Q \lvert \mathbf{r} - \mathbf{q} \rvert\\
 &= \sum_{i=1}^N \left[ (r_i-q_i) \cdot \sum_{j=1}^N (r_j-q_j) \cdot \omega_{i,j} \right]
-\end{align}
-
+%
+\intertext{
 \subsection{Partial Derivatives}
 For simplicity we substitute
-\begin{align}
+}
 \mathbf{d} &= \mathbf{r} - \mathbf{q}.
 \end{align}
 %
