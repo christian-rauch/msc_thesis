@@ -199,11 +199,53 @@ Snapshots of the perceived point clouds are depicted in \cref{fig:bottle_point_c
 \label{fig:bottle_point_cloud}
 \end{figure}
 
+
+\subsubsection{Self-Observation Filtering}
+
+An alternative to using prior information in the optimization is to use prior information to provide the optimization with relevant data. In this sense, the reported state of the robot is used to filter its observation to only contain points close to the predicted location of the manipulator. In this scenario, the object is not included in tracking as relevant points cannot be obtained by self-observation.
+
+The filtering of observed data is achieved by projecting the manipulator into the field-of-view of the robot's perception system. Each point in the disparity image that is occupied by one of the robot's projected parts is kept while all remaining values are removed. This filtered region can be further expanded on the borders of the self perceived parts. \Cref{fig:self_observation_region} demonstrates the filtered perception on stereo data for three different values for the border expansion. The expansion value is the size of the squared dilation kernel that is applied to the self-observation mask.
+
+\begin{figure}[h]
+\centering
+\subfloat[0 pixel]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b0.png} }
+\subfloat[10 pixel]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b10.png} }
+\subfloat[100 pixel]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b100.png} }
+\caption{Point cloud filtering by self-observation with different expended regions.}
+\label{fig:self_observation_region}
+\end{figure}
+
+In comparison to the joint position prior applied to the objective function, the joint and task space errors for self-observation filtering are given in \cref{fig:filter_joint_error,fig:filter_pose_error}. The error is again given as the deviation from the reported pose, however the joint position prior is not used in the optimization and hence, the solution is not directly driven towards the reported configuration.
+
+As it can be easily seen for the joint space error in \cref{fig:filter_joint_error_hand,fig:filter_joint_error_arm}, there is an individual optimal value for the region expanding that minimizes the error for the finger joints (20) and the arm joints (150). While the finger joint deviation in the optimal expanded case is larger than the joint deviation using small weights (\cref{fig:stereo_joint_error_hand}), the optimal arm region expansion achieves similar results compared to the joint prior with weights around $1$ (\cref{fig:stereo_joint_error_arm}).
+
+\begin{figure}[h]
+\centering
+\subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_finger_joint_error.pdf} \label{fig:filter_joint_error_hand}}
+\subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_arm_joint_error.pdf} \label{fig:filter_joint_error_arm}}
+\caption{Joint space error for filtered perception}
+\label{fig:filter_joint_error}
+\end{figure}
+
+For large expansions of the self-observation mask (200), the hand position error in \cref{fig:filter_hand_pos_error} behaves similar to the case where no prior is used on the unfiltered observation (\cref{fig:stereo_hand_pos_error}). Further, in phases of contact with surrounding objects a smaller region expansion is preferable over larger borders. The reason for this is that large self-observation masks will include nearby objects, which again will distract the optimization without prior. On the other side, a larger region expansion is preferable in phases where the manipulator is moving in free space.
+The hand orientation error behaves similar to the arm joint error, in particular an optimal region expansion (150) emerges and larger region expansions are favourable in general.
+
+\begin{figure}
+\centering
+\subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_hand_pos_error.pdf} \label{fig:filter_hand_pos_error}}
+\subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_hand_ori_error.pdf} \label{fig:filter_hand_ori_error}}
+\caption{Task space error for filtered perception}
+\label{fig:filter_pose_error}
+\end{figure}
+
+
 \subsection{Interpretation}
 
 With the signed distance as the only objective function, the optimization is driven away from the reported state, with which it is initialized, whenever nearby but unrelated depth data is assigned to the robot model. Hence we conclude that \cref{hyp:distracting_readings} is true. By augmenting the objective function with an objective related to the reported state as the reference, this effect can be reduced.
 
 Across all weighting schemes and depth sources, we can see that weighting in respect to the deviation from the reported pose: (1) reduces the deviation of finger joint positions over the whole sequence of the trials by already choosing a small prior weight, (2) contributes most in movement phases that follow states where the manipulator is in contact with the scene (table, object). The application of individual weighting of joint deviations showed that by selecting specific joints, the task space error can be reduced while keeping the flexibility of preferring other objectives for the remaining parts of the robot model. For both assessed weighting schemes, it turned out that weights need to be chosen carefully to prevent overshooting on the reported state and hence the oscillation of the estimate state. Neglecting the issue of oscillating around the optimum, \cref{hyp:prior_information} is also considered as verified.
+
+The self-observation filtering of the perception showed that using prior information to shape the input to the optimization also counter acts the issue of distracting observation. By using prior information to filter relevant data, the reported robot state only indirectly improves the optimization result. Hence by design, the achievable reduction in deviation to reported state is limited compared to using the prior within the optimization. This has to be seen as an advantage, as the decoupling of the optimization from the reported joint values prevents cases of overfitting on the reported state.
 
 The assessed prior information is by design only applicable to the robot model. The tracked object remains to be driven by the signed distance function and hence relies on relevant depth data assigned to the object model. We saw that this is an issue for observing from an low angle to the object's principal axes.
 
