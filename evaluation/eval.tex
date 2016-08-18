@@ -59,7 +59,7 @@ The setup, as it is perceived by the robots stereo vision in the initial state, 
 \subfloat[Point cloud and reported robot state]{\includegraphics[height=7cm]{images/eval_prior/sequence/prior_setting.png} }
 \hspace{1cm}
 \subfloat[View from left camera]{\includegraphics[height=7cm]{images/eval_prior/sequence/camera_view_initial.png} }
-\caption[Exp. 1: Setup]{Experiment 1: Setup with robot in front of table. Initial state where manipulator is observed close to table plane.}
+\caption[Experiment 1: Setup]{Experiment 1: Setup with robot in front of table. Initial state where manipulator is observed close to table plane.}
 \label{fig:exp1_setup}
 \end{figure}
 
@@ -96,7 +96,7 @@ Especially the movement phases 2 and 4, respectively movements starting in state
 \subfloat[object contact (t=22)]{\includegraphics[width=0.25\textwidth]{images/eval_prior/sequence/bottle_22_object.png} 
 \label{fig:prior_movement_phases_contact}}
 \subfloat[end (t=35)]{\includegraphics[width=0.25\textwidth]{images/eval_prior/sequence/bottle_35_end.png} }
-\caption[Exp. 1: States between movements]{Sequence of states between movements in experiment 1 (time in seconds)}
+\caption[Experiment 1: States between movements]{Sequence of states between movements in experiment 1 (time in seconds)}
 \label{fig:prior_movement_phases}
 \end{figure}
 
@@ -133,7 +133,7 @@ The largest decrease in error can be seen for the finger joints when using alrea
 \subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_finger_joint_error.pdf} \label{fig:stereo_joint_error_hand} }
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_arm_joint_error.pdf} \label{fig:stereo_joint_error_arm} }
-\caption{Joint space error for finger and arm joints (Exp. 1, \textit{stereo} data). The finger joint deviation (a) can already reduces by a weak bias towards the reported pose ($0.2$, $0.5$), while the arm joints (b) require a higher weight ($\geq0.8$).}
+\caption[Joint space error (Exp. 1, stereo)]{Joint space error for finger and arm joints (Exp. 1, \textit{stereo} data). The finger joint deviation (a) can already reduces by a weak bias towards the reported pose ($0.2$, $0.5$), while the arm joints (b) require a higher weight ($\geq0.8$).}
 \label{fig:stereo_joint_error}
 \end{figure}
 
@@ -145,7 +145,7 @@ As the hand position and orientation only depends on the arm configuration but n
 %
 \subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_hand_ori_error.pdf}
 \label{fig:stereo_hand_ori_error}}
-\caption{Task space error for left hand pose (Exp. 1, \textit{stereo} data). (a) The hand position error can already be reduced by minimal weighting of the prior objective. (b) Small weights actually increase the error and higher weights of at least $0.8$ are required to enforce the reported pose.}
+\caption[Task space error (Exp. 1, stereo)]{Task space error for left hand pose (Exp. 1, \textit{stereo} data). (a) The hand position error can already be reduced by minimal weighting of the prior objective. (b) Small weights actually increase the error and higher weights of at least $0.8$ are required to enforce the reported pose.}
 \label{fig:stereo_hand_pose_error}
 \end{figure}
 
@@ -160,7 +160,7 @@ In contrast to the small errors on the arm joints when using stereo in the phase
 \subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_finger_joint_error.pdf} \label{fig:xtion_joint_error_hand}}
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_arm_joint_error.pdf} \label{fig:xtion_joint_error_arm}}
-\caption{Joint space error for finger and arm joints (Exp. 1, \textit{xtion} data). Comparable to stereo data set, the finger joint deviation (a) is already reduced by small weights.}
+\caption[Joint space error (Exp. 1, xtion)]{Joint space error for finger and arm joints (Exp. 1, \textit{xtion} data). Comparable to stereo data set, the finger joint deviation (a) is already reduced by small weights.}
 \label{fig:xtion_joint_error}
 \end{figure}
 
@@ -171,7 +171,7 @@ As before, the hand pose error is only effected by the arm joint errors and thus
 \subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_hand_pos_error.pdf} \label{fig:xtion_hand_pos_error}}
 %
 \subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_hand_ori_error.pdf} \label{fig:xtion_hand_ori_error}}
-\caption{Task space error for left hand pose (Exp. 1, \textit{xtion} data). The pose error this data set has a different characteristic than on the stereo data set. Large weights above $2$ are required to enforce the reported pose.}
+\caption[Task space error (Exp. 1, xtion)]{Task space error for left hand pose (Exp. 1, \textit{xtion} data). The pose error this data set has a different characteristic than on the stereo data set. Large weights above $2$ are required to enforce the reported pose.}
 \label{fig:xtion_hand_pose_error}
 \end{figure}
 
@@ -200,7 +200,7 @@ Because we specifically weight both palm joints, the joint space error of the fi
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/q1_stereo_arm_joint_error.pdf} }
 
-\caption{Joint space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or normal weights (c,d). Finger joint errors (a,c) increase with increasing palm weights, while arm joint errors (b,d) are reduced.}
+\caption[Joint space error for individual weighting (Exp. 1)]{Joint space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or normal weights (c,d). Finger joint errors (a,c) increase with increasing palm weights, while arm joint errors (b,d) are reduced.}
 \label{fig:indiv_joint_error}
 \end{figure}
 
@@ -219,7 +219,7 @@ The task space error (\cref{fig:indiv_pose_error}) is similarly related to the w
 %
 \subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/q1_stereo_hand_ori_error.pdf} }
 
-\caption{Task space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or normal weights (c,d). The hand pose error is reduced in each case for increasing palm weights.}
+\caption[Task space error for individual weighting (Exp. 1)]{Task space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or normal weights (c,d). The hand pose error is reduced in each case for increasing palm weights.}
 \label{fig:indiv_pose_error}
 \end{figure}
 
@@ -260,7 +260,7 @@ The filtering of observed data is achieved by projecting the manipulator into th
 \subfloat[normal mask]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b0.png} }
 \subfloat[expanded by 10 pxl]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b10.png} }
 \subfloat[expanded by 100 pxl]{\includegraphics[width=0.3\textwidth]{images/eval_prior/filtering/filt_b100.png} }
-\caption{Point cloud filtering by self-observation with different expended regions.}
+\caption[Self-Observation filtering]{Point cloud filtering by self-observation with different expended regions.}
 \label{fig:self_observation_region}
 \end{figure}
 
@@ -331,7 +331,7 @@ The robot is placed in a nominal position and its manipulator moves from this st
 \captionsetup{width=0.4\textwidth}
 \centering
 \includegraphics[width=0.4\textwidth]{images/eval_vicon/sequence/setting.png}
-\caption{Experiment 2: Setup in which a robot is observing its own manipulator.}
+\caption[Experiment 2: Setup]{Experiment 2: Setup in which a robot is observing its own manipulator.}
 \label{fig:vicon_free_movement}
 \end{figure}
 
