@@ -9,8 +9,8 @@ The presented gradient based approach is generally applicable to articulated mod
 It has been shown, however, that using the signed distance function alone results in local minima caused by depth readings from nearby objects.
 
 Motivated by the application of manipulator tracking when the manipulator is connected by a kinematic chain to the camera frame, the main contribution of this work has been the justification and evaluation of incorporating prior information into the optimization.
-The experiments have shown that exploiting this information is beneficial for acquiring more accurate estimations of the manipulator pose.
-However, comparisons with the ground truth data also revealed that there is actually an offset between the reported and the true hand pose. In these circumstances, the application of prior and the choice of weight must be critically examined. A solution to this dilemma has been presented by optimizing joint position offsets using the true hand pose.
+The experiments have shown that exploiting this information is beneficial for acquiring more accurate estimates of the manipulator pose.
+However, comparisons with the ground truth data also revealed that there is actually an offset between the reported and the true hand pose. In these circumstances, the application of a prior and the choice of weights must be critically examined. A solution to this dilemma has been presented by optimizing joint position offsets using measured ground truth hand poses.
 
 The comparison of two depth sources for object tracking demonstrated that estimating the pose of an object using depth data only is a much more difficult task since no prior information is available and the optimization thus depends on the distance function alone. Such an approach fails if the object is improper initialised and only sparse depth data is available.
 
@@ -19,7 +19,7 @@ The comparison of two depth sources for object tracking demonstrated that estima
 
 \subsection{Manipulator Tracking}
 
-Using the prior information is a step towards more reliable manipulator tracking. But we can only take full advantage of this, if the sensed joint state is as accurate as it can get. We further showed that selecting appropriate weights is not a straightforward task.
+Using the prior information is a step towards more reliable manipulator tracking. But we can only take full advantage of this, if the sensed joint state is as accurate as possible. We further showed that selecting appropriate weights is not a straightforward task.
 For the robust and useful exploitation of joint position prior in the optimization, the following research questions have been identified.
 
 \vspace{-0.04cm}
