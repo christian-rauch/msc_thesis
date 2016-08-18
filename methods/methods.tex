@@ -178,7 +178,7 @@ The final merged Hessian and the new gradient are the Gauss-Newton parameters th
 \subsection{Reported Joint Positions}
 
 The reported joint positions are used in addition to the observation to constrain the optimization to possible solutions that are close to the internally sensed state.
-This is achieved by blending a joint position based objective function into the SDF based objective function resulting in an objective function whose minimum is globally determined by the reported state and locally determined by depth observations.
+This is achieved by blending a joint position based objective function into the SDF based objective function resulting in an objective function whose minimum is globally determined by the reported state and locally determined by depth observations. We will also refer to this process as biasing the objective towards the reported pose.
 
 Two different kind of objective functions have been selected for this purpose which compute a weighted deviation of the estimated joint configuration $\mathbf{q}$ from reported joint configuration $\mathbf{r}$. The deviation is defined as the L2 norm $\left( \lVert \cdot \rVert_2 \right)$ of the difference vector $\mathbf{d} = \mathbf{r} - \mathbf{q}$.
 For all objective functions, $r_i$ and $q_i$ denote the individual joint positions in their corresponding configuration vector.
