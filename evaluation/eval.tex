@@ -3,7 +3,7 @@
 
 The articulated tracking approach and the incorporation of prior information is evaluated on two different data sets. The data set for the \textit{first experiment} contains depth observations from a manipulator that is moving close to a table and an object. This experiment will be used to compare different approaches to incorporate prior information in the tracking process.
 
-The data set for the \textit{second experiment} contains stereo camera observations of the manipulator at different viewing angles without nearby objects. This data set additionally contains the ground truth hand pose that were measured by the Vicon system.
+The data set for the \textit{second experiment} contains stereo camera observations of the manipulator at different viewing angles without nearby objects. This data set additionally contains the ground truth hand pose that were measured by the Vicon system. The main purpose of this experiment is the comparison of the estimated hand pose with the measured ground truth.
 
 \section{Experiment 1: Incorporating Prior Information}
 
@@ -133,7 +133,7 @@ The largest decrease in error can be seen for the finger joints when using alrea
 \subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_finger_joint_error.pdf} \label{fig:stereo_joint_error_hand} }
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/stereo_arm_joint_error.pdf} \label{fig:stereo_joint_error_arm} }
-\caption[Joint space error (Exp. 1, stereo)]{Joint space error for finger and arm joints (Exp. 1, \textit{stereo} data). The finger joint deviation (a) can already reduces by a weak bias towards the reported pose ($0.2$, $0.5$), while the arm joints (b) require a higher weight ($\geq0.8$).}
+\caption[Joint space error (Exp. 1, stereo)]{Joint space error for finger and arm joints (Exp. 1, \textit{stereo} data). The finger joint deviation (a) can already be reduced by a weak bias towards the reported pose ($0.2$, $0.5$), while the arm joints (b) require a higher weight ($\geq0.8$).}
 \label{fig:stereo_joint_error}
 \end{figure}
 
@@ -171,7 +171,7 @@ As before, the hand pose error is only effected by the arm joint errors and thus
 \subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_hand_pos_error.pdf} \label{fig:xtion_hand_pos_error}}
 %
 \subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/common_weights/xtion_hand_ori_error.pdf} \label{fig:xtion_hand_ori_error}}
-\caption[Task space error (Exp. 1, xtion)]{Task space error for left hand pose (Exp. 1, \textit{xtion} data). The pose error this data set has a different characteristic than on the stereo data set. Large weights above $2$ are required to enforce the reported pose.}
+\caption[Task space error (Exp. 1, xtion)]{Task space error for left hand pose (Exp. 1, \textit{xtion} data). The pose error on this data set has a different characteristic than on the stereo data set. Large weights above $2$ are required to enforce the reported pose.}
 \label{fig:xtion_hand_pose_error}
 \end{figure}
 
@@ -185,7 +185,7 @@ In this scenario, the two palm joints (\texttt{leftWristRoll} and \texttt{leftWr
 
 %\Cref{fig:indiv_joint_error} shows the joint space error for fingers and arms separately as before.
 
-Because we specifically weight both palm joints, the joint space error of the finger and the arm joints are effected in different ways (\cref{fig:indiv_joint_error}). While the arm joint error reduces with increasing palm weight, the finger joint error actually increases. The reason for this is that both palm joints, as part of the arm kinematic chain, determine the pose of the hand palm. While the hand pose is biased towards the reported pose by the prior, the fingers do not benefit from prior to the same extent.
+Because we specifically weight both palm joints, the joint space error of the finger and the arm joints are effected in different ways (\cref{fig:indiv_joint_error}). While the arm joint error reduces with increasing palm weight, the finger joint error actually increases. The reason for this is that both palm joints, as part of the arm kinematic chain, determine the pose of the hand palm. While the hand pose is biased towards the reported pose by the prior, the fingers do not benefit from this prior information to the same extent.
 
 
 %From these plots we can see that the individual weighting affects the fingers and the arm in different ways. The finger joint error in \cref{fig:indiv_joint_error_hand} shows that, raising the palm weights and keeping the remaining constant, actually impairs the performance (e.g., compare "\texttt{q 1, fingers 0.2}" with palm weights raised from \texttt{palm 1} to \texttt{palm 5}). In contrast to this, the arm joint error is reduced when increasing the palm weights and keeping remaining weights constant (e.g., compare \texttt{q 0.2, fingers 0.2, palm 5} and palm weights raised to \texttt{q 0.2, fingers 0.2, palm 25}).
@@ -272,7 +272,7 @@ As it can be easily seen for the joint space error in \cref{fig:filter_joint_err
 \centering
 \subfloat[finger joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_finger_joint_error.pdf} \label{fig:filter_joint_error_hand}}
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_arm_joint_error.pdf} \label{fig:filter_joint_error_arm}}
-\caption{Joint space error for filtered perception (Exp. 1)}
+\caption[Joint space error for filtered perception (Exp. 1)]{Joint space error for filtered perception (Exp. 1). Individual border expansions emerge for minimizing finger joint deviation (20) and for minimizing arm joint deviation (150).}
 \label{fig:filter_joint_error}
 \end{figure}
 
@@ -283,7 +283,7 @@ The hand orientation error behaves similar to the arm joint error, in particular
 \centering
 \subfloat[position error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_hand_pos_error.pdf} \label{fig:filter_hand_pos_error}}
 \subfloat[orientation error]{\includegraphics[width=0.5\textwidth]{images/eval_prior/filtering/stereo_hand_ori_error.pdf} \label{fig:filter_hand_ori_error}}
-\caption{Task space error for filtered perception (Exp. 1)}
+\caption[Task space error for filtered perception (Exp. 1)]{Task space error for filtered perception (Exp. 1). Smaller border expansions are preferable over large borders in phases where the manipulator is close to objects (highlighted).}
 \label{fig:filter_pose_error}
 \end{figure}
 
@@ -376,7 +376,7 @@ The \textit{arm movement} sequence contains three phases (\cref{tab:vic_arm_move
 \FloatBarrier
 
 \paragraph{Experiment 2b:}
-The \textit{finger movement} sequence contains 7 phases in total (\cref{tab:vic_finger_movement_phases}) of which 6 states are depicted in \cref{fig:finger_movement_states}. Both sequences show that due to self-occlusion, the manipulator cannot be fully observed in a single time instance. In states where the palm is facing down, the Vicon marker can be observed in the point cloud data.
+The \textit{finger movement} sequence contains 7 phases in total (\cref{tab:vic_finger_movement_phases}) of which 6 states are depicted in \cref{fig:finger_movement_states}. Both sequences show that due to self-occlusion, the manipulator cannot be fully observed within a single observation. In states where the palm is facing down, the Vicon marker can be observed in the point cloud data.
 
 \begin{table}[h]
 \centering
@@ -478,7 +478,7 @@ The error plots in \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movemen
 \subfloat[position error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_pos_error_nop.pdf} }
 \subfloat[orientation error (no prior)]{\includegraphics[width=0.5\textwidth]{images/eval_vicon/val_arm_ori_error_nop.pdf} }
 
-\caption[Arm movement, hand pose error]{Experiment 2a: Hand pose error of teh reported and estimated robot state compared to the Vicon hand marker pose.}
+\caption[Arm movement, hand pose error]{Experiment 2a: Hand pose error of the reported and estimated robot state compared to the Vicon hand marker pose.}
 \label{fig:vic_error_arm_movement}
 \end{figure}
 
@@ -533,7 +533,7 @@ The correlation between the averaged \textit{dart} offsets and \textit{vicon} of
 \subfloat[Arm movement (experiment 2a)]{\includegraphics[width=0.5\textwidth]{images/offset/dart_arm_offset.pdf} }
 \subfloat[Finger movement (experiment 2b)]{\includegraphics[width=0.5\textwidth]{images/offset/dart_finger_offset.pdf} }
 
-\caption[Estimated offsets]{Individual offsets of reported joint configuration to DART's estimated configuration}
+\caption[Estimated offsets]{Individual offsets of reported joint configuration to DART's estimated joint configuration}
 \label{fig:estimated_offsets}
 \end{figure}
 
