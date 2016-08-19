@@ -11,7 +11,7 @@ The focus of this work is the application of tracking on humanoid robotic platfo
 
 \subsection{Hardware}
 
-The applied robot platform is the humanoid robot Valkyrie (\cref{fig:valkyrie}) which is developed by the NASA. It is \SI{1.8}{\meter} high and weighs about \SI{125}{\kilo\gram}. In total, it is actuated by 58 joints: leg ($2 \times 6$), arms ($2 \times 7$), hands ($2 \times 13$), neck (3) and torso (3). Hence, the kinematic chain from the observation frame in the head to the hand frame consists of 10 actuated joints.
+The applied robot platform is the humanoid robot Valkyrie (\cref{fig:valkyrie}) which is developed by the NASA. It is \SI{1.8}{\meter} high and weighs about \SI{125}{\kilo\gram}. In total, it is actuated by 58 joints: legs ($2 \times 6$), arms ($2 \times 7$), hands ($2 \times 13$), neck (3) and torso (3). Hence, the kinematic chain from the observation frame in the head to the hand frame consists of 10 actuated joints.
 
 \begin{figure}
 \begin{minipage}{0.5\textwidth}
@@ -36,7 +36,7 @@ The applied robot platform is the humanoid robot Valkyrie (\cref{fig:valkyrie}) 
 The robot will use depth data as its main source of information for estimating the configuration of the manipulator and the object pose. The MultiSense SL stereo camera and LIDAR depth sensor (\cref{fig:multisense}), which is mounted inside the head of the robot, provides two sources of depth images: (1) stereo matching at \SI{15}{\hertz}, (2) rotating LIDAR which generates a full scan at \nicefrac{1}{6} \si{\hertz}. An optional structure from light sensor (\cref{fig:xtion_pro}), which can be mounted on top of the head, uses the known location of projected infrared (IR) dots to estimate the depth at these locations. The stereo cameras have their IR filter removed to enhance stereo matching by providing distinct keypoints from the IR pattern. The LIDAR data is not used for tracking because of its low update rate.
 The key properties of both depth sensors are compared in \cref{tab:depth_sensor_comparison}. These properties are used for the back-projection to obtain the original 3D points.
 
-\begin{table}
+\begin{table}[h]
 \captionsetup{width=0.7\textwidth}
 \centering
 \begin{tabular}{|c||c|c|}
@@ -65,6 +65,7 @@ b & \SI{0.07}{\meter} & \SI{0.075}{\meter} \\
 \label{tab:depth_sensor_comparison}
 \end{table}
 
+
 \subsection{Robot Model Representation}
 
 Part of this thesis is the adaptation of DART's reference implementation to robot model representations stored in the URDF (Unified Robot Description Format) format. URDF defines at a minimum a tree structure that resembles the kinematic tree of a robot with its joints and links. It can additionally provide, among other things, information about joint limits and the geometric properties of the links. These geometric properties can be defined as primitive shapes like spheres, boxes or cylinders, or alternatively refer to more complex triangle meshes.
@@ -86,7 +87,7 @@ The description of the signed distance function in this section is a reformulati
 
 The signed distance function (SDF) gives the shortest distance of a point in the observed point cloud to the robot model. It is signed in the sense that the distance is positive if the point lies outside the model, it is negative if the point is inside the model, and it is zero if the point lies exactly on the surface of the model. DART uses two kind of SDFs: the model SDF and the observation SDF.
 
-Using the model SDF, the optimization assigns observed data to the robot model to find estimates that explain the observation. If a single (global) SDF is used for the articulated robot model, this SDF needs to be computed for each individual joint configuration. For this reason, the global SDF is broken down into local SDFs for each rigid robot part. To assign points from the observation to the robot, each data point is queried in each of the robot's local SDFs in parallel (\cref{fig:model_SDF}). A data point is then assigned to the mesh with the smallest absolute distance and rejected, if it is too far away from any rigid part.
+Using the model SDF, the optimization assigns observed data to the robot model to find estimates that explain the observation. If a single (global) SDF is used for the articulated robot model, this SDF needs to be computed for each individual joint configuration. For this reason, the global SDF is broken down into local SDFs for each rigid robot part. To assign points from the observation to the robot, each data point is queried in each of the robot's local SDFs in parallel (\cref{fig:model_SDF}). A data point is then assigned to the mesh with the smallest absolute distance or it is rejected, if it is too far away from any rigid part.
 
 In addition to considering observed data and the robot model, which is defined as \textit{positive information} in DART, the optimization is also using \textit{negative information}. If a point is observed in 3D, there cannot be anything in between this point and the camera centre (\cref{fig:observation_SDF}). The observation SDF uses the distance transform on the observation and the estimated configuration of the model from the model SDF to constrain models to not be in free space.
 
@@ -94,7 +95,7 @@ In addition to considering observed data and the robot model, which is defined a
 \centering
 \subfloat[Model SDF]{\includegraphics[width=0.5\textwidth]{images/sdf/local_sdf.png} \label{fig:model_SDF}}
 \subfloat[Observation SDF]{\includegraphics[width=0.3\textwidth]{images/sdf/sdf_obs.pdf} \label{fig:observation_SDF}}
-\caption[Signed Distance Function]{Local model SDF and observation SDF (Inspired by \cite{Schmidt2015} figures 3 and 6). (a) Two parts (gray blocks) connected by a kinematic chain are observed in the camera frame. The observed data point (red) is assigned to the closest part 2 after querying its distance in each parts local SDF. (b) The estimated pose of a part (light gray box) is blocking the line of sight between the image centre and the observed points. The alternative solution (dark gray box) is more likely selected as it is not violating the free space constraint.}
+\caption[Signed Distance Function]{Local model SDF and observation SDF (Inspired by \cite{Schmidt2015} figures 3 and 6). (a) Two parts (gray blocks) connected by a kinematic chain are observed in the camera frame. The observed data point (red) is assigned to the closest part 2 after querying its distance in each part's local SDF. (b) The estimated pose of a part (light gray box) is blocking the line of sight between the image centre and the observed points. The alternative solution (dark gray box) is more likely selected as it is not violating the free space constraint.}
 \end{figure}
 
 \section{Gauss-Newton Algorithm}
@@ -144,7 +145,7 @@ The parameter update $\Delta\mathbf{p}$ is proportionally driven by the gradient
 
 Additional information can be incorporated during the tracking process either indirectly by shaping the input data on which the optimization is operating on, or directly by biasing the objective function. In the latter case, additional objective functions are integrated in the Gauss-Newton algorithm by blending their gradient and Hessian approximation with other objective functions.
 
-The full parameter vector $\mathbf{p}$ in DART contains the 6D pose of the root frame and the $N$ joints positions:
+The full parameter vector $\mathbf{p}$ in DART contains the 6D pose of the root frame and the $N$ joint positions:
 \begin{equation}
 \mathbf{p} = \begin{bmatrix}
 x & y & z & \phi & \theta & \psi & | & q_1 & \cdots & q_N
@@ -160,7 +161,7 @@ The position of each joint in the kinematic chain can be sensed directly through
 
 As mentioned before, we know that the observation frame is part of the kinematic chain and rigidly connected to the head frame. Hence, observing this head frame is impossible.
 
-To prevent movement of the head frame in between optimization iterations, the pose update in the parameter update vector $\Delta\mathbf{p}$ needs to be null. After the gradient and the Hessians of all other objective functions have been blended, the resulting gradient and Hessian is recomputed such that the pose update is removed from the parameter update vector.
+To prevent movement of the head frame in between optimization iterations, the pose update in the parameter update vector $\Delta\mathbf{p}$ needs to be null. After the gradients and the Hessians of all other objective functions have been blended, the resulting gradient and Hessian is recomputed such that the pose update is removed from the parameter update vector.
 From \cref{eqn:gn_param_update} the current parameter update is computed and its pose update is removed:
 %
 \begin{align}
@@ -195,7 +196,7 @@ with scalar weight $w>0$.
 e_2 &= \lvert \mathbf{r} - \mathbf{q} \rvert^\top Q \lvert \mathbf{r} - \mathbf{q} \rvert \\
 &= \sum_{i=1}^N \left[ (r_i-q_i) \cdot \sum_{j=1}^N (r_j-q_j) \cdot \omega_{i,j} \right] \label{eqn:objf_indiv_weighted}
 \end{align}
-with the weight matrix $Q\in\mathbf{R}^{N\times N}$ and its elements $\omega_{i,j}$. As a error metric, the weight matrix $Q$ must be \emph{positive-semidefinite}. That is, $\forall \mathbf{x}\in\mathbf{R}^n: x^\top Q x \geq 0$.
+with the weight matrix $Q\in\mathbf{R}^{N\times N}$ and its elements $\omega_{i,j}$. As an error metric, the weight matrix $Q$ must be \emph{positive-semidefinite}. That is, $\forall \mathbf{x}\in\mathbf{R}^n: x^\top Q x \geq 0$.
 \end{enumerate}
 
 Whereas the first objective function (\cref{eqn:objf_weightedL2}) uses a common scalar weight for all joint deviations, the second objective function (\cref{eqn:objf_indiv_weighted}) can penalize specific joint deviations and specific linear combinations of deviations. This enables us to enforce a reported state onto the estimated state for specific parts of the robot while keeping other parts free to be optimized by other objective functions.
@@ -214,7 +215,7 @@ J_{ji} &= \frac{\partial e_2}{\partial q_i} = - \left[ \sum_{j=1}^N d_jq_{i,j}\r
 
 \subsection{Observation Filtering}
 
-An alternative solution to incorporate the joint position prior into the optimization process is to filter the depth observations of the observed manipulator. Given the camera parameters and a robot model that is articulated with the current joint positions, the robot's parts are projected into the camera image. For this camera image, a binary mask is storing locations that are occupied by one of the robot's parts. This binary mask is further expanded on its borders by a dilation operation with a rectangular kernel of variable size.
+An alternative solution to incorporate the joint position prior into the optimization process is to filter the depth observations of the observed manipulator. Given the camera parameters and a robot model that is articulated by the current joint positions, the robot's parts are projected into the camera image. For this camera image, a binary mask is storing locations that are occupied by one of the robot's parts. This binary mask is further expanded on its borders by a dilation operation with a rectangular kernel of variable size.
 
 An example of such a manipulator mask and the filtered observation is shown in  \cref{fig:filtered_perception}. By expanding the mask, the filtered observation includes more related sensor data from the manipulator itself but also more unrelated sensor data from its surrounding.
 
@@ -231,11 +232,11 @@ An example of such a manipulator mask and the filtered observation is shown in  
 
 \section{Ground Truth Data Collection}
 
-To evaluate the tracking performance and verify the effect of the joint position prior, reference measurements of the true state of the robot are required. The Vicon motion caption system is selected to externally track the pose of IR reflective markers rigidly attached to the robot.
+To evaluate the tracking performance and verify the effect of the joint position prior, reference measurements of the robot state are required. The Vicon motion caption system is selected to externally track the pose of IR reflective markers rigidly attached to the robot.
 
 \subsection{Setup}
 
-To obtain the true transformation from the pelvis frame to the left hand palm frame, reflective markers are rigidly mounted with standoffs to the specific robot frames. The photograph in \cref{fig:vicon_marker} shows the highlighted location of the markers on the \texttt{pelvis} frame (green) and the \texttt{leftPalm} frame (red).
+To measure the transformation from the pelvis frame to the left hand palm frame, reflective markers are rigidly mounted with standoffs at the specific robot frames. The photograph in \cref{fig:vicon_marker} shows the highlighted location of the markers on the \texttt{pelvis} frame (green) and the \texttt{leftPalm} frame (red).
 
 \begin{figure}[h]
 \captionsetup{width=0.4\textwidth}
