@@ -1,6 +1,6 @@
 \chapter{Joint Prior Derivation}
 
-This chapter contains the derivation of the joint prior used for the Jacobian in the Hessian approximation and the gradient for the Gauss-Newton algorithm.
+This chapter contains the derivation of the joint position prior used for the Jacobian in the Hessian approximation and the gradient for the Gauss-Newton algorithm.
 
 \section{Weighted L2 Norm of Deviation}
 
@@ -15,7 +15,7 @@ e &= w \cdot \lVert \mathbf{r} - \mathbf{q} \rVert_2 \\
 For simplicity we substitute
 }
 \mathbf{d} &= \mathbf{r} - \mathbf{q} \\
-e &= w \cdot \sqrt{\mathbf{ss}} \\
+e &= w \cdot \sqrt{ss} \\
 ss &= \sum_{i=1}^N d_i^2 .
 \end{align}
 %
@@ -25,7 +25,7 @@ Derivation by chain rule:
 \frac{\partial d_i}{\partial q_i} &= -1 \nonumber\\
 \frac{\partial e}{\partial d_i} &= \frac{\partial ss}{\partial d_i} \cdot \frac{\partial e}{\partial ss} \nonumber\\
 \frac{\partial ss}{\partial d_i} &= 2d_i \nonumber\\
-\frac{\partial e}{\partial d_i} &= w + \frac{1}{2} ss^{-\frac{1}{2}} 2 d = -\frac{w \cdot d_i}{\sqrt{\sum_{i=1}^N}d_i^2} \nonumber\\
+\frac{\partial e}{\partial d_i} &= \frac{w}{2} \cdot \frac{1}{ss^{\nicefrac{-1}{2}}} \cdot 2 d_i = \frac{w \cdot d_i}{\sqrt{\sum_{i=1}^N d_i^2}} \nonumber\\
 \frac{\partial e}{\partial q_i} &= -w \frac{r_i - q_i}{\lVert \mathbf{r} - \mathbf{q} \rVert_2}
 \end{align}
 
