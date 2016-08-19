@@ -3,7 +3,7 @@
 
 The articulated tracking approach and the incorporation of prior information is evaluated on two different data sets. The data set for the \textit{first experiment} contains depth observations from a manipulator that is moving close to a table and an object. This experiment will be used to compare different approaches to incorporate prior information in the tracking process.
 
-The data set for the \textit{second experiment} contains stereo camera observations of the manipulator at different viewing angles without nearby objects. This data set additionally contains the ground truth hand pose that were measured by the Vicon system. The main purpose of this experiment is the comparison of the estimated hand pose with the measured ground truth.
+The data set for the \textit{second experiment} contains stereo camera observations of the manipulator at different viewing angles without nearby objects. This data set additionally contains ground truth hand poses that were measured by the Vicon system. The main purpose of this experiment is the comparison of the estimated hand pose with the measured ground truth.
 
 \section{Experiment 1: Incorporating Prior Information}
 
@@ -200,7 +200,7 @@ Because we specifically weight both palm joints, the joint space error of the fi
 %
 \subfloat[arm joints]{\includegraphics[width=0.5\textwidth]{images/eval_prior/inidv_weights/q1_stereo_arm_joint_error.pdf} }
 
-\caption[Joint space error for individual weighting (Exp. 1)]{Joint space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or normal weights (c,d). Finger joint errors (a,c) increase with increasing palm weights, while arm joint errors (b,d) are reduced.}
+\caption[Joint space error for individual weighting (Exp. 1)]{Joint space error for individual weighting (Exp. 1). Weights on palm joints are increased ($1$, $5$, $25$) while remaining joints are kept constant at low weights (a,b) or at normal weights (c,d). Finger joint errors (a,c) increase with increasing palm weights, while arm joint errors (b,d) are reduced.}
 \label{fig:indiv_joint_error}
 \end{figure}
 
@@ -297,7 +297,8 @@ Across all weighting schemes and depth sources, we can see that weighting in res
 The self-observation filtering of the perception showed that using prior information to shape the input to the optimization also counteracts the issue of distracting observation. By using prior information to filter relevant data, the reported robot state only indirectly improves the optimization result.
 The decoupling of the optimization from the reported joint values prevents cases of overfitting on the reported state by limiting the bias from prior information.
 
-The assessed prior information is by design only applicable to the robot model. The tracked object remains to be driven by the signed distance function and hence relies on relevant depth data assigned to the object model. We saw that this is an issue for observing from an low angle to the object's principal axes.
+The assessed prior information is by design only applicable to the robot model. The tracked object remains to be driven by the signed distance function and hence relies on relevant depth data assigned to the object model.
+%We saw that this is an issue for observing from an low angle to the object's principal axes.
 
 
 \section{Experiment 2: Ground Truth Comparison}
@@ -328,7 +329,7 @@ Reported and estimated left hand poses agree with the measured hand pose.
 The robot is placed in a nominal position and its manipulator moves from this state into the field of view of the camera (\cref{fig:vicon_free_movement}). To observe the manipulator and its fingers from different perspectives, the hand and the fingers are actuated by a certain degree. The data set is therefore divided into two parts: \textit{arm movement} (experiment 2a), where mainly the shoulder and the forearm joints are actuated, and \textit{finger movement} (experiment 2b) where all fingers are actuated at the same time. During the complete experiment, Vicon markers are attached to the pelvis and backside of the palm to track the orientation of both robot frames (\cref{fig:vicon_marker}).
 
 \begin{figure}[h]
-\captionsetup{width=0.4\textwidth}
+\captionsetup{width=0.45\textwidth}
 \centering
 \includegraphics[width=0.4\textwidth]{images/eval_vicon/sequence/setting.png}
 \caption[Experiment 2: Setup]{Experiment 2: Setup in which a robot is observing its own manipulator.}
@@ -336,7 +337,7 @@ The robot is placed in a nominal position and its manipulator moves from this st
 \end{figure}
 
 \paragraph{Experiment 2a:}
-The \textit{arm movement} sequence contains three phases (\cref{tab:vic_arm_movement_phases}) of which 3 final states are depicted in \cref{fig:arm_movement_states}.
+The \textit{arm movement} sequence contains three movement phases (\cref{tab:vic_arm_movement_phases}) of which 3 final states are depicted in \cref{fig:arm_movement_states}.
 
 \begin{table}[h]
 \centering
@@ -365,7 +366,7 @@ The \textit{arm movement} sequence contains three phases (\cref{tab:vic_arm_move
 \begin{tabular}{cc:c:c}
 & \textit{Phase 2 (t=55\si{\second})} & \textit{Phase 3 (t=91\si{\second})} & \textit{Phase 4 (t=132\si{\second})} \\
 & (facing towards robot) & (facing up) & (facing down)\\
-\rotatebox{90}{ \hspace{0.8cm} camera image } & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view55.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view91.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view132.png} \\
+\rotatebox{90}{ \hspace{0.45cm} camera image } & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view55.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view91.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/arm_movement_cam_view132.png} \\
 \rotatebox{90}{ \hspace{1cm} point cloud } & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/obs_55.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/obs_91.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/obs_132.png} \\
 \rotatebox{90}{ \hspace{1cm} reported state } & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/rep_55.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/rep_91.png} & \includegraphics[width=\imgwidth]{images/eval_vicon/sequence/arm_movement/rep_132.png} \\
 \end{tabular}
@@ -376,7 +377,7 @@ The \textit{arm movement} sequence contains three phases (\cref{tab:vic_arm_move
 \FloatBarrier
 
 \paragraph{Experiment 2b:}
-The \textit{finger movement} sequence contains 7 phases in total (\cref{tab:vic_finger_movement_phases}) of which 6 states are depicted in \cref{fig:finger_movement_states}. Both sequences show that due to self-occlusion, the manipulator cannot be fully observed within a single observation. In states where the palm is facing down, the Vicon marker can be observed in the point cloud data.
+The \textit{finger movement} sequence contains 7 movement phases in total (\cref{tab:vic_finger_movement_phases}) of which 6 states are depicted in \cref{fig:finger_movement_states}.
 
 \begin{table}[h]
 \centering
@@ -433,6 +434,8 @@ The \textit{finger movement} sequence contains 7 phases in total (\cref{tab:vic_
 \caption[Finger movement sequence]{Experiment 2b (\textit{finger movement}): Sequence of states in which the fingers are close to certain degree (order from left to right: open, closed $\sim 25\%$, closed $\sim 50\%$). \textit{Upper sequence:} Hand palm facing down, \textit{Lower sequence:} Hand palm facing towards robot. In each sequence: \textit{Upper row:} camera image, \textit{Middle row:} point cloud observation, \textit{Lower row:} reported state.}
 \label{fig:finger_movement_states}
 \end{figure}
+
+Both data sets show that due to self-occlusion, the manipulator cannot be fully observed within a single observation. In states where the palm is facing down, the Vicon marker can be observed in the point cloud data.
 
 %\FloatBarrier
 
@@ -600,7 +603,7 @@ finger & arm & 0.00853 & 0.06859 & 0.00458 & 0.06636 \\
 \label{tab:offset_training_test_error}
 \end{table}
 
-After applying the constant offsets optimized on the entire data set (last column in \cref{tab:avg_offsets_comparison}) to the reported pose, the new reported hand pose error is reduced by usually more than \SI{1}{\cm} (compare \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movement} with \cref{fig:corrected_hand_pose}). The effect of applying the offsets are additionally visually verified by comparing the robot state with the the perceived state from LIDAR data of the \textit{arm movement} data set (\cref{fig:lidar_corrected_state}) and an additional grasping data set (\cref{fig:stereo_corrected_state}). Note, that despite the shown pose in the grasping data set (\cref{fig:stereo_corrected_state}) has not been included in the optimization, the application of the offsets results in hand poses closer to the perceived point cloud.
+After applying the constant offsets optimized on the entire data set (last column in \cref{tab:avg_offsets_comparison}) to the reported pose, the new reported hand pose error is reduced by usually more than \SI{1}{\cm} (compare \cref{fig:vic_error_arm_movement,fig:vic_error_finger_movement} with \cref{fig:corrected_hand_pose}). The effect of applying the offsets are additionally visually verified by comparing the robot state with the the perceived state from LIDAR data of the \textit{arm movement} data set (\cref{fig:lidar_corrected_state}) and an additional grasping data set (\cref{fig:stereo_corrected_state}). Note that despite the shown pose in the grasping data set (\cref{fig:stereo_corrected_state}, left) has not been included in the optimization, the application of the offsets results in a hand pose that is closer to the perceived point cloud (\cref{fig:stereo_corrected_state}, right).
 
 \begin{figure}
 \centering
@@ -641,4 +644,4 @@ reported configuration & corrected configuration \\
 \subsection{Interpretation}
 
 The comparison of joint offsets estimated by the tracker and optimized on the reported Vicon marker showed no correlation. Furthermore, time elapse of the estimated offsets revealed no systematic discrepancy from the reported joint position values. \Cref{hyp:matching_joint_offset} is therefore considered as not verified.
-However, the offset optimization on the true pose has shown that the reported hand pose error can be reduced by a constant individual joint offset.
+However, the offset optimization on the ground truth poses has shown that the reported hand pose error can be reduced by a constant individual joint offset.
